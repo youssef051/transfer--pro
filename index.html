@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saman Pro - Multi Screen</title>
+    <title>Saman Pro</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Saman Pro">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/552/552791.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/552/552791.png">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Saman%20Pro%22,%22short_name%22:%22Saman%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%236c5ce7%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/552/552791.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+
     <style>
         :root {
             --bg: #f0f2f5;
@@ -30,7 +38,6 @@
             display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* باڕی سەرەوە */
         .header {
             padding: 20px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 10;
@@ -42,13 +49,11 @@
             display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
 
-        /* پەیجەکان */
         .page { flex: 1; padding: 25px; display: none; flex-direction: column; overflow-y: auto; }
         .active-page { display: flex; animation: slideIn 0.4s; }
 
         @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* ستایلی دوگمە و ئینپوت */
         .card { background: var(--bg); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
         input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); background: var(--surface); color: var(--text); outline: none; font-size: 1rem; }
         
@@ -85,7 +90,6 @@
         <div id="page-login" class="page">
             <button onclick="navTo('page-welcome')" style="border:none; background:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">🔙 گەڕانەوە</button>
             <h2>چوونەژوورەوە</h2>
-            <p style="opacity:0.6; margin-bottom:30px;">زانیارییەکانت بنووسە بۆ چوونە ژوورەوە</p>
             <div class="card">
                 <input type="number" id="loginPhone" placeholder="ژمارەی مۆبایل">
                 <input type="password" id="loginPass" placeholder="وشەی نهێنی">
@@ -96,10 +100,9 @@
         <div id="page-signup" class="page">
             <button onclick="navTo('page-welcome')" style="border:none; background:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">🔙 گەڕانەوە</button>
             <h2>هەژمارێکی نوێ</h2>
-            <p style="opacity:0.6; margin-bottom:30px;">بۆ یەکەمجارە؟ لێرە هەژمار دروستبکە</p>
             <div class="card">
-                <input type="number" id="regPhone" placeholder="ژمارەی مۆبایلی نوێ">
-                <input type="password" id="regPass" placeholder="وشەی نهێنی دابنێ">
+                <input type="number" id="regPhone" placeholder="ژمارەی مۆبایل">
+                <input type="password" id="regPass" placeholder="وشەی نهێنی">
                 <button class="btn btn-primary" onclick="doRegister()">تۆمارکردن</button>
             </div>
         </div>
@@ -162,7 +165,7 @@
 
         function doRegister() {
             const p = document.getElementById('regPhone').value, ps = document.getElementById('regPass').value;
-            if(p.length < 10 || ps.length < 4) return alert("تکایە زانیارییەکان تەواو بکە");
+            if(p.length < 10 || ps.length < 4) return alert("زانیارییەکان تەواو بکە");
             let db = JSON.parse(localStorage.getItem('user_db')) || {};
             if(db[p]) return alert("ئەم ژمارەیە پێشتر تۆمار کراوە");
             db[p] = { pass: ps, data: [] };
