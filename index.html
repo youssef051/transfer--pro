@@ -18,9 +18,9 @@
         .panel { display: none; }
         .id-badge { background: rgba(56, 189, 248, 0.1); border: 2px dashed var(--accent); padding: 35px; border-radius: 25px; text-align: center; margin-bottom: 20px; }
         .id-text { font-size: 45px; font-weight: 900; color: var(--accent); letter-spacing: 3px; }
-        input[type="text"] { width: 100%; background: #0d1117; border: 1px solid #30363d; padding: 18px; border-radius: 15px; color: white; text-align: center; font-size: 18px; margin-bottom: 20px; }
+        input[type="text"] { width: 100%; background: #0d1117; border: 1px solid #30363d; padding: 18px; border-radius: 15px; color: white; text-align: center; font-size: 18px; margin-bottom: 10px; }
         .btn-action { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 100%; text-align: center; border: 1px solid var(--accent); }
     </style>
 </head>
@@ -36,34 +36,38 @@
         </div>
         <div class="option-card" onclick="showPanel('receive')">
             <div class="icon-box" style="background:#7928ca"><i class="fas fa-download"></i></div>
-            <div><b>وەرگرتنی فایل</b><span>کۆدی خۆت نیشان بدە</span></div>
+            <div><b>وەرگرتنی فایل</b><span>کۆدی مۆبایلەکەت</span></div>
         </div>
     </div>
 
     <div id="sendPanel" class="panel">
-        <input type="text" id="targetId" placeholder="کۆدی مۆبایلەکەی تر بنووسە">
-        <input type="file" id="fileInp" multiple hidden onchange="updateFiles()">
-        <div class="option-card" onclick="document.getElementById('fileInp').click()" style="border: 2px dashed #444; background: transparent;">
-            <div class="icon-box" style="background: rgba(56, 189, 248, 0.1);"><i class="fas fa-plus" style="color: var(--accent);"></i></div>
-            <div><b>هەڵبژاردنی فایل</b><span id="fileCountText">هیچ فایلێک نییە</span></div>
+        <input type="text" id="targetId" placeholder="کۆدی مۆبایلە وەرگرەکە">
+        <button class="btn-action" style="background: #22c55e;" onclick="connectToPeer()">1. بەستنەوەی مۆبایلەکان</button>
+        
+        <div id="fileSection" style="display:none; margin-top: 20px;">
+            <input type="file" id="fileInp" multiple hidden onchange="updateFiles()">
+            <div class="option-card" onclick="document.getElementById('fileInp').click()" style="border: 2px dashed #444; background: transparent;">
+                <div class="icon-box" style="background: rgba(56, 189, 248, 0.1);"><i class="fas fa-plus" style="color: var(--accent);"></i></div>
+                <div><b>هەڵبژاردنی وێنە</b><span id="fileCountText">هیچ فایلێک نییە</span></div>
+            </div>
+            <button class="btn-action" onclick="sendFilesNow()">2. ناردنی فایلەکان</button>
         </div>
-        <button class="btn-action" onclick="connectAndSend()">ناردن</button>
         <button class="btn-action" style="background:transparent; border:1px solid #333;" onclick="location.reload()">گەڕانەوە</button>
     </div>
 
     <div id="receivePanel" class="panel">
         <div class="id-badge"><div class="id-text" id="myId">.....</div></div>
-        <p style="text-align:center; color:#8b949e;">ئەم کۆدە لە مۆبایلەکەی تر لێ بدە</p>
+        <p style="text-align:center; color:#8b949e;">ئەم کۆدە بدە بە مۆبایلە نێرەرەکە</p>
         <button class="btn-action" style="background:transparent; border:1px solid #333;" onclick="location.reload()">گەڕانەوە</button>
     </div>
 </div>
 
 <div id="acceptModal" class="modal">
     <div class="modal-content">
-        <h2 id="statusText">داوای بەستنەوە</h2>
-        <p id="detailText">مۆبایلێک دەیەوێت فایل بنێرێت.</p>
+        <h2 id="statusText">داواکاری هات</h2>
+        <p id="detailText">مۆبایلێک دەیەوێت پەیوەندیت پێوە بکات.</p>
         <div id="actionButtons">
-            <button class="btn-action" style="background:#22c55e;" onclick="acceptRequest()">قبوڵکردن</button>
+            <button class="btn-action" style="background:#22c55e;" onclick="confirmConnection()">قبوڵکردن</button>
             <button class="btn-action" style="background:#ef4444;" onclick="location.reload()">ڕەتکردنەوە</button>
         </div>
     </div>
@@ -71,9 +75,11 @@
 
 <script>
     const peer = new Peer();
-    let conn;
+    let activeConn;
 
-    peer.on('open', id => document.getElementById('myId').innerText = id.substring(0, 5).toUpperCase());
+    peer.on('open', id => {
+        document.getElementById('myId').innerText = id.substring(0, 5).toUpperCase();
+    });
 
     function showPanel(p) {
         document.getElementById('mainMenu').style.display = 'none';
@@ -84,44 +90,52 @@
         document.getElementById('fileCountText').innerText = document.getElementById('fileInp').files.length + " فایل هەڵبژێردراوە";
     }
 
-    // لایەنی وەرگر
+    // لایەنی وەرگر (سامسۆنگ یان هەر مۆبایلێکی تر)
     peer.on('connection', c => {
-        conn = c;
+        activeConn = c;
         document.getElementById('acceptModal').style.display = 'flex';
         
-        conn.on('data', data => {
+        c.on('data', data => {
             const blob = new Blob([data.file], { type: data.type });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = data.name;
-            link.click();
-            document.getElementById('statusText').innerText = "تەواو بوو!";
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.name;
+            a.click();
+            document.getElementById('statusText').innerText = "فایل گەیشت!";
         });
     });
 
-    function acceptRequest() {
-        document.getElementById('statusText').innerText = "چاوەڕوان بە...";
-        document.getElementById('detailText').innerText = "خەریکی داگرتنی فایلەکەیە...";
+    function confirmConnection() {
+        document.getElementById('statusText').innerText = "بەسترایەوە!";
+        document.getElementById('detailText').innerText = "ئێستا چاوەڕێ بکە تا فایلەکانت بۆ بنێرێت...";
         document.getElementById('actionButtons').style.display = 'none';
     }
 
-    // لایەنی ناردن
-    function connectAndSend() {
+    // لایەنی ناردن (ئایفۆن یان هەر مۆبایلێکی تر)
+    function connectToPeer() {
         const id = document.getElementById('targetId').value.toUpperCase();
-        const files = document.getElementById('fileInp').files;
-        if(!id || files.length === 0) return alert("کۆد و فایلەکان دیاری بکە");
-
-        const c = peer.connect(id);
-        c.on('open', () => {
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    c.send({ file: reader.result, name: file.name, type: file.type });
-                };
-                reader.readAsArrayBuffer(file);
-            });
-            alert("فایلەکان ناردراون!");
+        if(!id) return alert("کۆدەکە بنووسە");
+        
+        activeConn = peer.connect(id);
+        activeConn.on('open', () => {
+            document.getElementById('fileSection').style.display = 'block';
+            alert("مۆبایلەکان بەسترانەوە! ئێستا فایلەکان هەڵبژێرە");
         });
+    }
+
+    function sendFilesNow() {
+        const files = document.getElementById('fileInp').files;
+        if(files.length === 0) return alert("وێنەکان هەڵبژێرە");
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                activeConn.send({ file: reader.result, name: file.name, type: file.type });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+        alert("فایلەکان ناردراون!");
     }
 </script>
 </body>
