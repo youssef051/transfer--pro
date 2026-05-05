@@ -3,140 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Transfer X Pro</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Saman Pro - Multi Screen</title>
     <style>
-        :root { --bg: #0b0e14; --card: #161b22; --accent: #38bdf8; --text: #f0f6fc; }
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        .app-shell { width: 100%; max-width: 450px; background: radial-gradient(circle at top right, #1e1b4b, #0b0e14); padding: 25px; display: flex; flex-direction: column; }
-        .logo { text-align: center; font-size: 26px; font-weight: 900; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 40px; }
-        .main-menu { display: grid; gap: 15px; }
-        .option-card { background: var(--card); padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
-        .icon-box { width: 55px; height: 55px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; }
-        .panel { display: none; }
-        .id-badge { background: rgba(56, 189, 248, 0.1); border: 2px dashed var(--accent); padding: 35px; border-radius: 25px; text-align: center; margin-bottom: 20px; }
-        .id-text { font-size: 45px; font-weight: 900; color: var(--accent); letter-spacing: 3px; }
-        input[type="text"] { width: 100%; background: #0d1117; border: 1px solid #30363d; padding: 18px; border-radius: 15px; color: white; text-align: center; font-size: 18px; margin-bottom: 10px; }
-        .btn-action { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 100%; text-align: center; border: 1px solid var(--accent); }
+        :root {
+            --bg: #f0f2f5;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --accent: #6c5ce7;
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --card-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; }
+
+        .app-shell {
+            width: 100%; max-width: 420px; height: 100vh;
+            background: var(--surface); position: relative;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* باڕی سەرەوە */
+        .header {
+            padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 10;
+        }
+
+        .header-btn {
+            width: 45px; height: 45px; border-radius: 15px; border: none;
+            background: var(--bg); color: var(--text); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+
+        /* پەیجەکان */
+        .page { flex: 1; padding: 25px; display: none; flex-direction: column; overflow-y: auto; }
+        .active-page { display: flex; animation: slideIn 0.4s; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* ستایلی دوگمە و ئینپوت */
+        .card { background: var(--bg); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
+        input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); background: var(--surface); color: var(--text); outline: none; font-size: 1rem; }
+        
+        .btn { width: 100%; padding: 18px; border-radius: 20px; border: none; color: white; font-weight: 800; cursor: pointer; font-size: 1.1rem; margin-bottom: 10px; }
+        .btn-primary { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); }
+        .btn-red { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .btn-green { background: linear-gradient(135deg, #55efc4, #00b894); }
+
+        .debt-card { background: var(--bg); padding: 18px; border-radius: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-<div class="app-shell">
-    <div class="logo">TRANSFER X PRO</div>
-
-    <div id="mainMenu" class="main-menu">
-        <div class="option-card" onclick="showPanel('send')">
-            <div class="icon-box" style="background:#0070f3"><i class="fas fa-paper-plane"></i></div>
-            <div><b>ناردنی فایل</b><span>وێنە و ڤیدیۆ بنێرە</span></div>
+    <div class="app-shell">
+        <div class="header">
+            <button class="header-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <div style="font-weight: 900; letter-spacing: 1px;">SAMAN PRO</div>
+            <button class="header-btn" onclick="logout()" id="logoutBtn" style="visibility: hidden; color: #ff4757;">🚪</button>
         </div>
-        <div class="option-card" onclick="showPanel('receive')">
-            <div class="icon-box" style="background:#7928ca"><i class="fas fa-download"></i></div>
-            <div><b>وەرگرتنی فایل</b><span>کۆدی مۆبایلەکەت</span></div>
-        </div>
-    </div>
 
-    <div id="sendPanel" class="panel">
-        <input type="text" id="targetId" placeholder="کۆدی مۆبایلە وەرگرەکە">
-        <button class="btn-action" style="background: #22c55e;" onclick="connectToPeer()">1. بەستنەوەی مۆبایلەکان</button>
-        
-        <div id="fileSection" style="display:none; margin-top: 20px;">
-            <input type="file" id="fileInp" multiple hidden onchange="updateFiles()">
-            <div class="option-card" onclick="document.getElementById('fileInp').click()" style="border: 2px dashed #444; background: transparent;">
-                <div class="icon-box" style="background: rgba(56, 189, 248, 0.1);"><i class="fas fa-plus" style="color: var(--accent);"></i></div>
-                <div><b>هەڵبژاردنی وێنە</b><span id="fileCountText">هیچ فایلێک نییە</span></div>
+        <div id="page-welcome" class="page active-page">
+            <div style="text-align: center; margin-top: 50px; flex: 1;">
+                <div style="font-size: 5rem; margin-bottom: 20px;">💎</div>
+                <h1 style="font-size: 2.2rem; margin-bottom: 10px;">بەخێرهاتی</h1>
+                <p style="opacity: 0.6; padding: 0 20px;">سیستەمی بەڕێوەبردنی قەرزەکانی سامانی زیرەک</p>
             </div>
-            <button class="btn-action" onclick="sendFilesNow()">2. ناردنی فایلەکان</button>
+            <div style="padding-bottom: 40px;">
+                <button class="btn btn-primary" onclick="navTo('page-login')">چوونەژوورەوە</button>
+                <button class="btn btn-outline" onclick="navTo('page-signup')">دروستکردنی هەژمار</button>
+            </div>
         </div>
-        <button class="btn-action" style="background:transparent; border:1px solid #333;" onclick="location.reload()">گەڕانەوە</button>
-    </div>
 
-    <div id="receivePanel" class="panel">
-        <div class="id-badge"><div class="id-text" id="myId">.....</div></div>
-        <p style="text-align:center; color:#8b949e;">ئەم کۆدە بدە بە مۆبایلە نێرەرەکە</p>
-        <button class="btn-action" style="background:transparent; border:1px solid #333;" onclick="location.reload()">گەڕانەوە</button>
-    </div>
-</div>
+        <div id="page-login" class="page">
+            <button onclick="navTo('page-welcome')" style="border:none; background:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">🔙 گەڕانەوە</button>
+            <h2>چوونەژوورەوە</h2>
+            <p style="opacity:0.6; margin-bottom:30px;">زانیارییەکانت بنووسە بۆ چوونە ژوورەوە</p>
+            <div class="card">
+                <input type="number" id="loginPhone" placeholder="ژمارەی مۆبایل">
+                <input type="password" id="loginPass" placeholder="وشەی نهێنی">
+                <button class="btn btn-primary" onclick="doLogin()">داخل بە</button>
+            </div>
+        </div>
 
-<div id="acceptModal" class="modal">
-    <div class="modal-content">
-        <h2 id="statusText">داواکاری هات</h2>
-        <p id="detailText">مۆبایلێک دەیەوێت پەیوەندیت پێوە بکات.</p>
-        <div id="actionButtons">
-            <button class="btn-action" style="background:#22c55e;" onclick="confirmConnection()">قبوڵکردن</button>
-            <button class="btn-action" style="background:#ef4444;" onclick="location.reload()">ڕەتکردنەوە</button>
+        <div id="page-signup" class="page">
+            <button onclick="navTo('page-welcome')" style="border:none; background:none; color:var(--accent); cursor:pointer; font-weight:bold; margin-bottom:20px;">🔙 گەڕانەوە</button>
+            <h2>هەژمارێکی نوێ</h2>
+            <p style="opacity:0.6; margin-bottom:30px;">بۆ یەکەمجارە؟ لێرە هەژمار دروستبکە</p>
+            <div class="card">
+                <input type="number" id="regPhone" placeholder="ژمارەی مۆبایلی نوێ">
+                <input type="password" id="regPass" placeholder="وشەی نهێنی دابنێ">
+                <button class="btn btn-primary" onclick="doRegister()">تۆمارکردن</button>
+            </div>
+        </div>
+
+        <div id="page-gate" class="page">
+            <h2 id="userHello" style="margin-bottom: 30px;">سڵاو</h2>
+            <button class="card btn-red" style="height: 140px; font-size: 1.4rem;" onclick="openQarz('to')">🔻 قەرزاری کێم؟</button>
+            <button class="card btn-green" style="height: 140px; font-size: 1.4rem;" onclick="openQarz('from')">🔺 کێ قەرزارمە؟</button>
+        </div>
+
+        <div id="page-list" class="page">
+            <div style="display:flex; align-items:center; margin-bottom:20px;">
+                <button onclick="navTo('page-gate')" style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:var(--text); margin-left:15px;">🔙</button>
+                <h3 id="listTitle">لیست</h3>
+            </div>
+            <div class="card" style="text-align:center; background: var(--accent); color: white;">
+                <small style="opacity: 0.8;">کۆی گشتی</small>
+                <h2 id="totalAmount" style="font-size: 2.2rem;">0 IQD</h2>
+            </div>
+            <div class="card">
+                <input type="text" id="itemName" placeholder="ناوی کەسەکە">
+                <input type="number" id="itemPhone" placeholder="مۆبایلەکەی">
+                <input type="number" id="itemAmt" placeholder="بڕی پارە">
+                <button id="addBtn" class="btn" onclick="saveItem()">تۆمارکردن</button>
+            </div>
+            <div id="renderBox"></div>
         </div>
     </div>
-</div>
 
-<script>
-    const peer = new Peer();
-    let activeConn;
+    <script>
+        let currentU = null;
+        let currentM = "";
 
-    peer.on('open', id => {
-        document.getElementById('myId').innerText = id.substring(0, 5).toUpperCase();
-    });
+        window.onload = () => {
+            const th = localStorage.getItem('theme') || 'light';
+            setTheme(th);
+            const ses = localStorage.getItem('sess');
+            if(ses) { 
+                currentU = ses; 
+                document.getElementById('logoutBtn').style.visibility = 'visible';
+                document.getElementById('userHello').innerText = "سڵاو، " + ses;
+                navTo('page-gate'); 
+            }
+        };
 
-    function showPanel(p) {
-        document.getElementById('mainMenu').style.display = 'none';
-        document.getElementById(p + 'Panel').style.display = 'block';
-    }
+        function setTheme(t) {
+            document.body.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+            document.getElementById('themeBtn').innerText = t === 'light' ? '🌙' : '☀️';
+        }
 
-    function updateFiles() {
-        document.getElementById('fileCountText').innerText = document.getElementById('fileInp').files.length + " فایل هەڵبژێردراوە";
-    }
+        function toggleTheme() {
+            setTheme(document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        }
 
-    // لایەنی وەرگر (سامسۆنگ یان هەر مۆبایلێکی تر)
-    peer.on('connection', c => {
-        activeConn = c;
-        document.getElementById('acceptModal').style.display = 'flex';
-        
-        c.on('data', data => {
-            const blob = new Blob([data.file], { type: data.type });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = data.name;
-            a.click();
-            document.getElementById('statusText').innerText = "فایل گەیشت!";
-        });
-    });
+        function navTo(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+        }
 
-    function confirmConnection() {
-        document.getElementById('statusText').innerText = "بەسترایەوە!";
-        document.getElementById('detailText').innerText = "ئێستا چاوەڕێ بکە تا فایلەکانت بۆ بنێرێت...";
-        document.getElementById('actionButtons').style.display = 'none';
-    }
+        function doRegister() {
+            const p = document.getElementById('regPhone').value, ps = document.getElementById('regPass').value;
+            if(p.length < 10 || ps.length < 4) return alert("تکایە زانیارییەکان تەواو بکە");
+            let db = JSON.parse(localStorage.getItem('user_db')) || {};
+            if(db[p]) return alert("ئەم ژمارەیە پێشتر تۆمار کراوە");
+            db[p] = { pass: ps, data: [] };
+            localStorage.setItem('user_db', JSON.stringify(db));
+            alert("هەژمارەکەت دروستکرا! ئێستا دەتوانیت داخل بیت");
+            navTo('page-login');
+        }
 
-    // لایەنی ناردن (ئایفۆن یان هەر مۆبایلێکی تر)
-    function connectToPeer() {
-        const id = document.getElementById('targetId').value.toUpperCase();
-        if(!id) return alert("کۆدەکە بنووسە");
-        
-        activeConn = peer.connect(id);
-        activeConn.on('open', () => {
-            document.getElementById('fileSection').style.display = 'block';
-            alert("مۆبایلەکان بەسترانەوە! ئێستا فایلەکان هەڵبژێرە");
-        });
-    }
+        function doLogin() {
+            const p = document.getElementById('loginPhone').value, ps = document.getElementById('loginPass').value;
+            let db = JSON.parse(localStorage.getItem('user_db')) || {};
+            if(db[p] && db[p].pass === ps) {
+                localStorage.setItem('sess', p);
+                location.reload();
+            } else alert("ژمارە یان پاسوورد هەڵەیە!");
+        }
 
-    function sendFilesNow() {
-        const files = document.getElementById('fileInp').files;
-        if(files.length === 0) return alert("وێنەکان هەڵبژێرە");
+        function openQarz(m) {
+            currentM = m;
+            document.getElementById('listTitle').innerText = m === 'to' ? "قەرزاری کێم؟" : "کێ قەرزارمە؟";
+            document.getElementById('addBtn').style.background = m === 'to' ? '#ff7675' : '#55efc4';
+            navTo('page-list');
+            render();
+        }
 
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                activeConn.send({ file: reader.result, name: file.name, type: file.type });
-            };
-            reader.readAsArrayBuffer(file);
-        });
-        alert("فایلەکان ناردراون!");
-    }
-</script>
+        function saveItem() {
+            const n = document.getElementById('itemName').value, ph = document.getElementById('itemPhone').value, am = document.getElementById('itemAmt').value;
+            if(!n || !am) return;
+            let db = JSON.parse(localStorage.getItem('user_db'));
+            db[currentU].data.push({ id: Date.now(), n, ph, am, type: currentM });
+            localStorage.setItem('user_db', JSON.stringify(db));
+            document.getElementById('itemName').value = ""; document.getElementById('itemPhone').value = ""; document.getElementById('itemAmt').value = "";
+            render();
+        }
+
+        function del(id) {
+            let db = JSON.parse(localStorage.getItem('user_db'));
+            db[currentU].data = db[currentU].data.filter(x => x.id !== id);
+            localStorage.setItem('user_db', JSON.stringify(db));
+            render();
+        }
+
+        function render() {
+            const box = document.getElementById('renderBox'), tBox = document.getElementById('totalAmount');
+            box.innerHTML = "";
+            let db = JSON.parse(localStorage.getItem('user_db')), sum = 0;
+            let items = db[currentU].data.filter(x => x.type === currentM);
+            items.forEach(i => {
+                sum += parseFloat(i.am);
+                box.innerHTML += `<div class="debt-card">
+                    <div><b>${i.n}</b><br><small style="opacity:0.6">${i.ph||''}</small></div>
+                    <div style="text-align:left">
+                        <b style="color:${currentM==='to'?'#ff7675':'#00b894'}">${parseFloat(i.am).toLocaleString()}</b><br>
+                        <span onclick="del(${i.id})" style="cursor:pointer; margin-right:10px;">🗑️</span>
+                        ${i.ph ? `<span onclick="window.location.href='tel:${i.ph}'" style="cursor:pointer">📞</span>` : ''}
+                    </div>
+                </div>`;
+            });
+            tBox.innerText = sum.toLocaleString() + " IQD";
+        }
+
+        function logout() { localStorage.removeItem('sess'); location.reload(); }
+    </script>
 </body>
 </html>
