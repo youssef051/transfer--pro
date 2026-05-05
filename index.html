@@ -1,11 +1,126 @@
-<div id="acceptModal" class="modal">
-    <div class="modal-content">
-        <i class="fas fa-mobile-alt" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
-        <h3>داوای بەستنەوە</h3>
-        <p>مۆبایلێک دەیەوێت پەیوەندیت پێوە بکات بۆ ناردنی فایل.</p>
-        <div style="display:flex; gap:10px; margin-top: 20px;">
-            <button class="btn-action" style="background:#22c55e; margin:0;" onclick="acceptData()">قبوڵکردن</button>
-            <button class="btn-action" style="background:#ef4444; margin:0;" onclick="closeModal()">ڕەتکردنەوە</button>
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Transfer X Pro</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #0b0e14; --card: #161b22; --accent: #38bdf8; --text: #f0f6fc; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; height: 100vh; }
+        .app-shell { width: 100%; max-width: 450px; background: radial-gradient(circle at top right, #1e1b4b, #0b0e14); padding: 25px; display: flex; flex-direction: column; }
+        .logo { text-align: center; font-size: 26px; font-weight: 900; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 40px; }
+        
+        /* Menu & Cards */
+        .main-menu { display: grid; gap: 15px; }
+        .option-card { background: var(--card); padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        .option-card:active { transform: scale(0.98); background: #1c2128; }
+        .icon-box { width: 55px; height: 55px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; }
+
+        /* Panels */
+        .panel { display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .id-badge { background: rgba(56, 189, 248, 0.1); border: 2px dashed var(--accent); padding: 35px; border-radius: 25px; text-align: center; margin-bottom: 20px; }
+        .id-text { font-size: 45px; font-weight: 900; color: var(--accent); letter-spacing: 3px; }
+        
+        input[type="text"] { width: 100%; background: #0d1117; border: 1px solid #30363d; padding: 18px; border-radius: 15px; color: white; text-align: center; font-size: 18px; margin-bottom: 20px; }
+        .btn-action { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .btn-back { background: transparent; border: 1px solid #333; margin-top: 15px; }
+
+        /* Modal Popup */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 100%; max-width: 350px; text-align: center; border: 1px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="logo">TRANSFER X PRO</div>
+
+    <div id="mainMenu" class="main-menu">
+        <div class="option-card" onclick="showPanel('send')">
+            <div class="icon-box" style="background:#0070f3"><i class="fas fa-paper-plane"></i></div>
+            <div><b>ناردنی فایل</b><span>وێنە و ڤیدیۆ بنێرە</span></div>
+        </div>
+        <div class="option-card" onclick="showPanel('receive')">
+            <div class="icon-box" style="background:#7928ca"><i class="fas fa-download"></i></div>
+            <div><b>وەرگرتنی فایل</b><span>کۆدی خۆت نیشان بدە</span></div>
         </div>
     </div>
+
+    <div id="sendPanel" class="panel">
+        <input type="text" id="targetId" placeholder="کۆدی مۆبایلەکەی تر بنووسە">
+        <div class="option-card" onclick="document.getElementById('fileInp').click()" style="border: 2px dashed #444; background: transparent;">
+            <div class="icon-box" style="background: rgba(56, 189, 248, 0.1);"><i class="fas fa-plus" style="color: var(--accent);"></i></div>
+            <div><b>گەلەری بکەرەوە</b><span id="fileCountText">هیچ فایلێک نییە</span></div>
+        </div>
+        <input type="file" id="fileInp" multiple hidden onchange="updateFiles()">
+        <button class="btn-action" onclick="connectAndSend()">ناردنی داواکاری</button>
+        <button class="btn-action btn-back" onclick="location.reload()">گەڕانەوە</button>
+    </div>
+
+    <div id="receivePanel" class="panel">
+        <div class="id-badge">
+            <div class="id-text" id="myId">.....</div>
+        </div>
+        <p style="text-align:center; color:#8b949e;">ئەم کۆدە لە مۆبایلەکەی تر لێ بدە</p>
+        <button class="btn-action btn-back" onclick="location.reload()">گەڕانەوە</button>
+    </div>
 </div>
+
+<div id="acceptModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-share-alt" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+        <h2 style="margin:0 0 10px 0;">داوای بەستنەوە</h2>
+        <p style="color:#8b949e;">مۆبایلێک دەیەوێت فایل بنێرێت، ڕازییت؟</p>
+        <button class="btn-action" style="background:#22c55e;" onclick="acceptRequest()">قبوڵکردن</button>
+        <button class="btn-action" style="background:#ef4444;" onclick="closeModal()">ڕەتکردنەوە</button>
+    </div>
+</div>
+
+<script>
+    const peer = new Peer();
+    let currentConn = null;
+
+    peer.on('open', id => {
+        document.getElementById('myId').innerText = id.substring(0, 5).toUpperCase();
+    });
+
+    function showPanel(panel) {
+        document.getElementById('mainMenu').style.display = 'none';
+        document.getElementById(panel + 'Panel').style.display = 'block';
+    }
+
+    function updateFiles() {
+        const count = document.getElementById('fileInp').files.length;
+        document.getElementById('fileCountText').innerText = count + " فایل هەڵبژێردراوە";
+    }
+
+    // لایەنی وەرگر
+    peer.on('connection', conn => {
+        currentConn = conn;
+        document.getElementById('acceptModal').style.display = 'flex';
+    });
+
+    function acceptRequest() {
+        alert("پەیوەندی دروست بوو! داتا وەر دەگیرێت...");
+        closeModal();
+    }
+
+    function connectAndSend() {
+        const id = document.getElementById('targetId').value.toUpperCase();
+        const files = document.getElementById('fileInp').files;
+        if(!id || files.length === 0) return alert("کۆد و فایلەکان دیاری بکە");
+        
+        peer.connect(id);
+        alert("داواکاری ناردرا، چاوەڕێی وەرگر بکە...");
+    }
+
+    function closeModal() { document.getElementById('acceptModal').style.display = 'none'; }
+</script>
+
+</body>
+</html>
