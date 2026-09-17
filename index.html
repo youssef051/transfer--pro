@@ -1,150 +1,1684 @@
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ناردنی پەیام بە بۆتی تەلەگرام</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Vazirmatn', sans-serif; }
-  </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
-
-  <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-700">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0d0d11">
+    <title>خواردنگەی یوسف - LUX</title>
     
-    <div class="text-center mb-6">
-      <h1 class="text-2xl font-bold text-sky-400">تەختەی کۆنتڕۆڵی بۆتی تەلەگرام</h1>
-      <p class="text-slate-400 text-sm mt-1">پەیامەکانت ڕاستەوخۆ بە بۆتەکەت بنێرە</p>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0d0d11;
+            --card-bg: rgba(22, 22, 30, 0.9);
+            --accent-gold: #d4af37;
+            --accent-gold-bright: #f3e5ab;
+            --text-color: #f5f5f7;
+            --text-muted: #a1a1a6;
+            --danger: #e63946;
+            --success: #25d366;
+            --info: #0088cc;
+            --border: rgba(212, 175, 55, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            padding-bottom: 260px;
+            contain: content;
+            transition: background 0.3s ease;
+        }
+
+        header {
+            background: rgba(13, 13, 17, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            margin-bottom: 6px;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            background: #111;
+        }
+
+        .logo-text-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-gold-bright) 50%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+            line-height: 1.2;
+        }
+
+        .logo-subtitle {
+            font-size: 0.65rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-top: 2px;
+            opacity: 0.95;
+        }
+
+        .header-btns { 
+            display: flex; 
+            flex-direction: row;
+            gap: 5px; 
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-icon-small {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 5px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-icon-small:hover {
+            opacity: 1;
+            color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .rest-status-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .rest-open { background: rgba(37, 211, 102, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .rest-closed { background: rgba(230, 57, 70, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        .stories-bar {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 12px 16px 6px 16px;
+            scrollbar-width: none;
+        }
+        .stories-bar::-webkit-scrollbar { display: none; }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .story-ring {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #f3e5ab, #d4af37, #e63946, #d4af37);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+        }
+
+        .story-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--bg-color);
+            background: #111;
+        }
+
+        .story-title {
+            font-size: 0.68rem;
+            color: var(--text-color);
+            font-weight: 700;
+            max-width: 62px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .story-viewer-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 99999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-viewer-card {
+            width: 100vw; height: 100vh;
+            background: #000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .story-progress-container {
+            position: absolute;
+            top: 15px; left: 12px; right: 12px;
+            display: flex; gap: 4px; z-index: 30;
+        }
+
+        .story-progress-segment {
+            flex: 1; height: 3px;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 3px; overflow: hidden;
+        }
+
+        .story-progress-fill { height: 100%; width: 0%; background: #ffffff; }
+
+        .story-header-info {
+            position: absolute;
+            top: 28px; left: 14px; right: 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            z-index: 30;
+        }
+
+        .story-author {
+            display: flex; align-items: center; gap: 10px;
+            color: #fff; font-size: 0.9rem; font-weight: bold;
+        }
+
+        .story-author img {
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--accent-gold);
+        }
+
+        .story-close-btn { color: #fff; font-size: 1.6rem; cursor: pointer; padding: 4px 8px; }
+        .story-viewer-img { width: 100vw; height: 100vh; object-fit: cover; position: absolute; inset: 0; z-index: 10; }
+        .story-viewer-caption {
+            position: absolute; bottom: 40px; left: 20px; right: 20px;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px);
+            padding: 12px 16px; border-radius: 14px; color: #fff;
+            font-size: 0.9rem; font-weight: bold; text-align: center;
+            border: 1px solid rgba(255,255,255,0.2); z-index: 30;
+        }
+
+        .categories-container {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding: 10px 16px; scrollbar-width: none;
+        }
+        .categories-container::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            background: var(--card-bg); color: var(--text-muted);
+            border: 1px solid var(--border); padding: 6px 14px;
+            border-radius: 20px; white-space: nowrap; cursor: pointer;
+            font-size: 0.8rem; font-weight: 700;
+        }
+
+        .cat-btn.active {
+            background: var(--accent-gold); color: #000;
+            border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px; padding: 10px 16px;
+        }
+
+        .food-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 14px; overflow: hidden; display: flex;
+            flex-direction: column; justify-content: space-between;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+        }
+
+        .food-card img { width: 100%; height: 110px; object-fit: cover; background: #111; }
+        .food-info { padding: 8px; }
+        .food-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 2px; }
+        .food-price { color: var(--accent-gold); font-weight: 700; font-size: 0.8rem; margin-bottom: 6px; }
+
+        .quantity-control {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.08); border-radius: 6px; padding: 2px 4px;
+        }
+
+        .qty-btn {
+            background: var(--accent-gold); color: #000; border: none;
+            width: 22px; height: 22px; border-radius: 4px; font-weight: bold; cursor: pointer;
+        }
+
+        .qty-val { font-weight: bold; font-size: 0.8rem; }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 24px); max-width: 480px;
+            background: rgba(18, 18, 24, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--accent-gold);
+            border-radius: 16px; padding: 12px 14px;
+            z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+        }
+
+        .cart-details {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 8px;
+        }
+
+        .input-box {
+            width: 100%; background: rgba(13, 13, 17, 0.9);
+            border: 1px solid var(--border); color: #fff;
+            padding: 8px 12px; border-radius: 8px;
+            margin-bottom: 6px; font-size: 0.82rem; outline: none;
+        }
+        .input-box:focus { border-color: var(--accent-gold); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold-bright), var(--accent-gold));
+            color: #000; border: none; padding: 10px;
+            border-radius: 8px; font-weight: bold; cursor: pointer;
+            width: 100%; display: flex; align-items: center;
+            justify-content: center; gap: 6px; font-size: 0.9rem;
+        }
+
+        .btn-primary:disabled {
+            background: #555 !important;
+            color: #888 !important;
+            cursor: not-allowed !important;
+        }
+
+        .btn-location {
+            background: rgba(212, 175, 55, 0.15); color: var(--accent-gold);
+            border: 1px solid var(--accent-gold); padding: 4px 10px;
+            border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-location.active {
+            background: var(--success); color: #000; border-color: var(--success);
+        }
+
+        .btn-whatsapp {
+            background: rgba(37, 211, 102, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            text-decoration: none;
+        }
+        .btn-whatsapp:hover {
+            background: var(--success);
+            color: #000;
+        }
+
+        .modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
+            z-index: 2000; align-items: center; justify-content: center; padding: 16px;
+        }
+
+        .modal-content {
+            background: #14141a; border: 1px solid var(--border);
+            width: 100%; max-width: 500px; max-height: 88vh;
+            overflow-y: auto; border-radius: 16px; padding: 18px;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .close-btn { position: absolute; top: 14px; left: 14px; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; z-index: 10; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--accent-gold); margin-bottom: 4px; font-weight: bold; }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold-bright), var(--accent-gold));
+            color: #000; border: none; width: 100%; padding: 9px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem;
+        }
+
+        .admin-tabs {
+            display: flex; gap: 4px; border-bottom: 1px solid var(--border);
+            margin-bottom: 14px; padding-bottom: 8px; overflow-x: auto;
+        }
+
+        .admin-tab-btn {
+            flex: 1; min-width: 80px; background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted); border: 1px solid transparent;
+            padding: 7px 4px; border-radius: 8px; font-size: 0.75rem;
+            font-weight: bold; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 4px; white-space: nowrap;
+        }
+
+        .admin-tab-btn.active {
+            background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border-color: var(--border);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .admin-item-row {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03); padding: 8px 10px;
+            border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 8px;
+        }
+
+        .admin-item-info { display: flex; align-items: center; gap: 10px; }
+        .admin-item-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+
+        .btn-delete {
+            background: rgba(230, 57, 70, 0.15); color: var(--danger);
+            border: 1px solid var(--danger); padding: 5px 10px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: bold;
+        }
+
+        .btn-map-app {
+            background: rgba(0, 136, 204, 0.2); color: var(--info);
+            border: 1px solid var(--info); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold;
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 6px;
+            text-decoration: none;
+        }
+
+        .messenger-box { display: flex; flex-direction: column; gap: 12px; }
+        .msg-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px;
+            position: relative;
+        }
+        .msg-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 6px; margin-bottom: 8px;
+        }
+        .msg-user { color: var(--accent-gold); font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .msg-time { font-size: 0.7rem; color: var(--text-muted); }
+        .msg-body { font-size: 0.82rem; line-height: 1.5; color: #eee; }
+        .msg-items { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px; margin: 6px 0; }
+        .msg-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.78rem; }
+        .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }
+        .badge-pending { background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-delivered { background: rgba(37, 211, 102, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+        .delivery-card {
+            background: rgba(20, 25, 35, 0.95);
+            border: 1px solid rgba(0, 136, 204, 0.4);
+            border-radius: 12px; padding: 14px; margin-bottom: 12px;
+        }
+        .btn-accept {
+            background: var(--info); color: #fff; border: none;
+            padding: 8px 12px; border-radius: 6px; font-weight: bold;
+            cursor: pointer; width: 100%; margin-top: 8px; font-size: 0.85rem;
+        }
+
+        .delivery-inline-map {
+            width: 100%;
+            height: 240px;
+            border-radius: 10px;
+            border: 1px solid var(--info);
+            margin-top: 10px;
+            display: none;
+            z-index: 1;
+        }
+
+        .customer-status-bar {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-toggle-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+        .status-btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .status-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: #fff;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .status-btn.active-open { background: var(--success); color: #000; border-color: var(--success); }
+        .status-btn.active-closed { background: var(--danger); color: #fff; border-color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+            <div><span id="header-rest-status" class="rest-status-badge rest-open">🟢 کراوەیە</span></div>
+            <div id="live-time">--:--</div>
+            <div id="live-date">--/--/----</div>
+        </div>
+        <div class="header-main">
+            <div class="logo">
+                <img src="logo.png" alt="خواردنگەی یوسف" class="logo-img" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+                <div class="logo-text-wrapper">
+                    <span class="logo-title">خواردنگەی یوسف</span>
+                    <span class="logo-subtitle">باشترین تام و کۆئالیتی</span>
+                </div>
+            </div>
+            
+            <div class="header-btns">
+                <button class="btn-icon-small" id="cust-auth-btn" onclick="openCustomerAuthModal()"><i class="fa-solid fa-user"></i> <span id="cust-btn-text">چوونەژوورەوە</span></button>
+                <button class="btn-icon-small" onclick="openAdminModal()"><i class="fa-solid fa-user-shield"></i> ئەدمین</button>
+                <button class="btn-icon-small" onclick="openDeliveryModal()"><i class="fa-solid fa-motorcycle"></i> دەیڤەری</button>
+                <button class="btn-icon-small" onclick="openModal('complaint-modal')"><i class="fa-solid fa-comment-dots"></i> گڵەیی</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="stories-bar" id="stories-bar"></div>
+    <div class="categories-container" id="categories-bar"></div>
+    <div class="menu-grid" id="menu-grid"></div>
+
+    <div class="cart-bar">
+        <div class="customer-status-bar" id="customer-info-bar">
+            <span id="cust-status-text">🔒 بەکارهێنەر: تۆمارنەکراوە (پێویستە بچیتە ژوورەوە)</span>
+            <button class="btn-location" style="padding: 2px 6px;" onclick="openCustomerAuthModal()">تۆماربوون</button>
+        </div>
+
+        <div class="cart-details">
+            <div>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">کۆی گشتی:</span>
+                <span id="cart-total" style="color: var(--accent-gold); font-weight: bold; font-size: 0.95rem;">0 IQD</span>
+            </div>
+            <button class="btn-location" id="btn-get-loc" onclick="getLocation()"><i class="fa-solid fa-location-dot"></i> <span id="loc-btn-text">دیاریکردنی شوێنەکەم</span></button>
+        </div>
+        <input type="text" id="order-note" class="input-box" placeholder="تێبینی یان ناونیشانی ماڵ...">
+        <button class="btn-primary" id="btn-submit-order" onclick="submitDirectOrder()">
+            <i class="fa-solid fa-paper-plane"></i> <span id="btn-submit-text">ناردنی داواکاری بۆ خواردنگە</span>
+        </button>
     </div>
 
-    <!-- Bot Credentials -->
-    <div class="space-y-4">
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Bot Token</label>
-        <input id="token" type="text" placeholder="8894769375:AAFL1..." 
-               class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:border-sky-500 transition">
-      </div>
+    <!-- 📱 مۆداڵی تۆماربوون / چوونەژوورەوەی کڕیار -->
+    <div class="modal" id="customer-auth-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal('customer-auth-modal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 12px; text-align: center;"><i class="fa-solid fa-user-lock"></i> تۆماربوون / چوونەژوورەوە</h3>
+            
+            <div id="cust-step-1">
+                <div class="form-group">
+                    <label>ژمارەی مۆبایل (پێویستە)*</label>
+                    <input type="tel" id="cust-phone-input" class="input-box" placeholder="07XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>وشەی نهێنی (پاسۆرد)</label>
+                    <input type="password" id="cust-pass-input" class="input-box" placeholder="******">
+                </div>
+                <button class="btn-gold" onclick="sendOtpCode()"><i class="fa-solid fa-paper-plane"></i> ناردنی کۆدی پشتڕاستکردنەوە</button>
+            </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Chat ID</label>
-        <input id="chatId" type="text" placeholder="6493460951" 
-               class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:border-sky-500 transition">
-      </div>
+            <div id="cust-step-2" style="display: none; margin-top: 10px;">
+                <div style="background: rgba(212, 175, 55, 0.1); padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 0.8rem; color: var(--accent-gold-bright);">
+                    کۆدی پشتڕاستکردنەوە ڕەوانەی ژمارەکەت کرا. تکایە کۆدەکە بنووسە:
+                </div>
+                <div class="form-group">
+                    <label>کۆدی پشتڕاستکردنەوە (OTP)</label>
+                    <input type="number" id="cust-otp-input" class="input-box" placeholder="1234">
+                </div>
+                <button class="btn-gold" onclick="verifyAndLoginCustomer()"><i class="fa-solid fa-check-circle"></i> تۆماربوون و چوونەژوورەوە</button>
+            </div>
 
-      <!-- Actions -->
-      <div class="flex gap-2">
-        <button onclick="checkBot()" class="w-1/2 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2.5 rounded-lg text-sm font-semibold transition">
-          🔍 پشکنینی بۆت
-        </button>
-        <button onclick="saveSettings()" class="w-1/2 bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-semibold transition">
-          💾 تۆمارکردنی زانیاری
-        </button>
-      </div>
-
-      <hr class="border-slate-700 my-4">
-
-      <!-- Message Sender -->
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">دەقی پەیام یان ئۆردەر</label>
-        <textarea id="message" rows="4" placeholder="پەیامەکەت یان داواکارییەکەت لێرە بنووسە..." 
-                  class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:outline-none focus:border-sky-500 transition"></textarea>
-      </div>
-
-      <button onclick="sendTelegramMessage()" class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-3 rounded-lg transition shadow-lg shadow-sky-500/20">
-        🚀 ناردنی پەیام
-      </button>
-
-      <!-- Status Alert -->
-      <div id="status" class="hidden p-3 rounded-lg text-sm text-center font-medium"></div>
-
+            <div id="cust-logged-in-sec" style="display: none; text-align: center;">
+                <p style="color: var(--success); font-weight: bold; margin-bottom: 10px;">✓ تۆ چوویتەتە ژوورەوە</p>
+                <p id="cust-logged-phone" style="color: #fff; margin-bottom: 14px;"></p>
+                <button class="btn-delete" style="width: 100%; padding: 8px;" onclick="logoutCustomer()">چوونەدەرەوە لە هەژمار</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    // بارکردنی زانیارییە تۆمارکراوەکان لە وێبگەڕدا
-    window.onload = function() {
-      if(localStorage.getItem('bot_token')) {
-        document.getElementById('token').value = localStorage.getItem('bot_token');
-      }
-      if(localStorage.getItem('chat_id')) {
-        document.getElementById('chatId').value = localStorage.getItem('chat_id');
-      }
-    };
+    <div class="story-viewer-modal" id="story-viewer-modal">
+        <div class="story-viewer-card" id="story-viewer-card" onclick="handleStoryTap(event)">
+            <div class="story-progress-container" id="story-progress-container"></div>
+            
+            <div class="story-header-info">
+                <div class="story-author">
+                    <img src="logo.png" onerror="this.src='https://via.placeholder.com/50'">
+                    <span id="story-viewer-title">خواردنگەی یوسف</span>
+                </div>
+                <i class="fa-solid fa-xmark story-close-btn" onclick="closeStoryViewer(event)"></i>
+            </div>
 
-    function saveSettings() {
-      const token = document.getElementById('token').value.trim();
-      const chatId = document.getElementById('chatId').value.trim();
-      
-      localStorage.setItem('bot_token', token);
-      localStorage.setItem('chat_id', chatId);
-      showStatus('زانیارییەکان لە وێبگەڕدا پاشەکەوت کران!', 'bg-emerald-900/50 text-emerald-300 border border-emerald-700');
-    }
+            <img src="" id="story-viewer-img" class="story-viewer-img" alt="ستۆری">
+            <div class="story-viewer-caption" id="story-viewer-caption"></div>
+        </div>
+    </div>
 
-    function showStatus(msg, classes) {
-      const statusDiv = document.getElementById('status');
-      statusDiv.className = `p-3 rounded-lg text-sm text-center font-medium ${classes}`;
-      statusDiv.innerText = msg;
-      statusDiv.classList.remove('hidden');
-    }
+    <div class="modal" id="complaint-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal('complaint-modal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 12px;">گڵەیی و پێشنیاز</h3>
+            <textarea id="complaint-text" class="input-box" rows="3" placeholder="تێبینی بنووسە..."></textarea>
+            <button class="btn-gold" onclick="sendComplaint()">ناردن</button>
+        </div>
+    </div>
 
-    // پشکنینی سەرکەوتوو بوونی بۆت
-    async function checkBot() {
-      const token = document.getElementById('token').value.trim();
-      if(!token) return showStatus('تکایە سەرەتا Token بنووسە', 'bg-amber-900/50 text-amber-300 border border-amber-700');
+    <div class="modal" id="admin-login-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal('admin-login-modal')"></i>
+            <h3 style="color: var(--accent-gold); margin-bottom: 12px;">چوونەژوورەوەی ئەدمین</h3>
+            <div class="form-group">
+                <label>یوزەرنەیم</label>
+                <input type="text" id="admin-user" class="input-box">
+            </div>
+            <div class="form-group">
+                <label>پاسۆرد</label>
+                <input type="password" id="admin-pass" class="input-box">
+            </div>
+            <button class="btn-gold" onclick="loginAdmin()">چوونەژوورەوە</button>
+        </div>
+    </div>
 
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${token}/getMe`);
-        const data = await res.json();
-        
-        if(data.ok) {
-          showStatus(`بۆتەکە چالاکە! ناوی بۆت: @${data.result.username}`, 'bg-emerald-900/50 text-emerald-300 border border-emerald-700');
-        } else {
-          showStatus(`کێشەیەک هەیە: ${data.description}`, 'bg-rose-900/50 text-rose-300 border border-rose-700');
+    <div class="modal" id="delivery-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal('delivery-modal')"></i>
+            
+            <div id="delivery-login-sec">
+                <h3 style="color: var(--info); margin-bottom: 12px; text-align: center;"><i class="fa-solid fa-motorcycle"></i> چوونەژوورەوەی دەیڤەری</h3>
+                <div class="form-group">
+                    <label>یوزەرنەیمی دەیڤەری</label>
+                    <input type="text" id="delivery-user-input" class="input-box">
+                </div>
+                <div class="form-group">
+                    <label>پاسۆرد</label>
+                    <input type="password" id="delivery-pass-input" class="input-box">
+                </div>
+                <button class="btn-gold" style="background: var(--info); color: #fff;" onclick="loginDelivery()">چوونەژوورەوە</button>
+            </div>
+
+            <div id="delivery-dashboard-sec" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 style="color: var(--info);"><i class="fa-solid fa-boxes-packing"></i> داواکارییە نێردراوەکان</h3>
+                    <button class="btn-delete" onclick="logoutDelivery()">چوونەدەرەوە</button>
+                </div>
+                <div id="delivery-orders-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="admin-panel-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal('admin-panel-modal')"></i>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <button class="btn-delete" style="padding: 4px 10px;" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> چوونەدەرەوە</button>
+                <h3 style="color: var(--accent-gold);">کۆنترۆڵ 💡</h3>
+            </div>
+
+            <div class="status-toggle-box">
+                <label style="font-size: 0.82rem; color: var(--accent-gold); font-weight: bold;"><i class="fa-solid fa-store"></i> باری کارکردنی خواردنگە:</label>
+                <div class="status-btn-group">
+                    <button id="btn-status-open" class="status-btn" onclick="setRestaurantStatus('open')"><i class="fa-solid fa-circle-check"></i> کراوەیە</button>
+                    <button id="btn-status-closed" class="status-btn" onclick="setRestaurantStatus('closed')"><i class="fa-solid fa-circle-xmark"></i> داخراوە</button>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('tab-orders', this)"><i class="fa-solid fa-comments"></i> نامەکان <span id="msg-count-badge" style="background: var(--danger); color: #fff; padding: 1px 5px; border-radius: 10px; font-size: 0.65rem;">0</span></button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('tab-foods', this)"><i class="fa-solid fa-utensils"></i> خواردنەکان</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('tab-stories', this)"><i class="fa-solid fa-circle-notch"></i> ستۆری</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('tab-delivery-users', this)"><i class="fa-solid fa-users-gear"></i> دەیڤەری</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('tab-telegram', this)"><i class="fa-brands fa-telegram"></i> تەلەگرام بۆت</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('tab-bg', this)"><i class="fa-solid fa-image"></i> پاشبنەما</button>
+            </div>
+
+            <div class="tab-content active" id="tab-orders">
+                <h4 style="color: #fff; margin-bottom: 10px; font-size: 0.85rem;"><i class="fa-solid fa-inbox"></i> سندوقی داواکارییە هاتووەکان</h4>
+                <div class="messenger-box" id="admin-messenger-list"></div>
+            </div>
+
+            <div class="tab-content" id="tab-foods">
+                <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
+                    <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> زیادکردنی خواردنی نوێ</h4>
+                    <div class="form-group">
+                        <label>بەش (کتێگۆری)</label>
+                        <input list="category-list" id="food-category" class="input-box" placeholder="هەڵبژێرە یان بنووسە...">
+                        <datalist id="category-list"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>ناوی خواردن</label>
+                        <input type="text" id="food-name" class="input-box" placeholder="نموونە: پیتزا مێکس">
+                    </div>
+                    <div class="form-group">
+                        <label>نرخ (IQD)</label>
+                        <input type="number" id="food-price" class="input-box" placeholder="8000">
+                    </div>
+                    <div class="form-group">
+                        <label>لینکی وێنە (Image URL)</label>
+                        <input type="text" id="food-image" class="input-box" placeholder="https://...">
+                    </div>
+                    <button class="btn-gold" onclick="addNewFood()">زیادکردنی خواردن</button>
+                </div>
+
+                <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;">لیستی خواردنەکان:</h4>
+                <div id="admin-food-list"></div>
+            </div>
+
+            <div class="tab-content" id="tab-stories">
+                <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
+                    <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> زیادکردنی ستۆری نوێ</h4>
+                    <div class="form-group">
+                        <label>سەردێڕی ستۆری</label>
+                        <input type="text" id="story-title-input" class="input-box" placeholder="ئۆفەری تایبەت">
+                    </div>
+                    <div class="form-group">
+                        <label>لینکی وێنەی ستۆری (Image URL)</label>
+                        <input type="text" id="story-img-input" class="input-box" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>ژێرنووسی سەر وێنە</label>
+                        <input type="text" id="story-caption-input" class="input-box" placeholder="پیتزای گەورە بە ٧,٠٠٠">
+                    </div>
+                    <button class="btn-gold" onclick="addNewStory()">زیادکردنی ستۆری</button>
+                </div>
+
+                <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;">ستۆرییە بەردەستەکان:</h4>
+                <div id="admin-story-list"></div>
+            </div>
+
+            <div class="tab-content" id="tab-delivery-users">
+                <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
+                    <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-solid fa-user-plus"></i> زیادرکردنی سایەقی دەیڤەری نوێ</h4>
+                    <div class="form-group">
+                        <label>ناوی سایەق</label>
+                        <input type="text" id="del-driver-name" class="input-box" placeholder="نموونە: ئارام">
+                    </div>
+                    <div class="form-group">
+                        <label>یوزەرنەیم</label>
+                        <input type="text" id="del-driver-user" class="input-box" placeholder="aram123">
+                    </div>
+                    <div class="form-group">
+                        <label>پاسۆرد</label>
+                        <input type="password" id="del-driver-pass" class="input-box" placeholder="******">
+                    </div>
+                    <button class="btn-gold" onclick="addDeliveryDriver()">تۆمارکردنی دەیڤەری</button>
+                </div>
+
+                <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;">لیستی سایەقەکان:</h4>
+                <div id="admin-delivery-drivers-list"></div>
+            </div>
+
+            <div class="tab-content" id="tab-telegram">
+                <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
+                    <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-brands fa-telegram" style="color:#0088cc;"></i> بەستنەوەی تەلەگرام بۆت</h4>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
+                        تەلەگرام بۆت ئۆتۆماتیک تەواوی داواکارییە نوێیەکان بە بێدەنگی ڕەوانەی تەلەگرامەکەت دەکات.
+                    </p>
+                    <div class="form-group">
+                        <label>Bot Token:</label>
+                        <input type="text" id="tg-token-input" class="input-box" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ">
+                    </div>
+                    <div class="form-group">
+                        <label>Chat ID:</label>
+                        <input type="text" id="tg-chatid-input" class="input-box" placeholder="987654321">
+                    </div>
+                    <button class="btn-gold" onclick="saveTelegramSettings()">تۆمارکردنی زانیاری تەلەگرام</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-bg">
+                <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+                    <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-solid fa-image"></i> وێنەی پاشبنەمای بەرنامە</h4>
+                    <div class="form-group">
+                        <label>لینکی وێنە (URL)</label>
+                        <input type="text" id="bg-image-url" class="input-box" placeholder="https://...">
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn-gold" onclick="updateBackground()">تۆمارکردن</button>
+                        <button class="btn-delete" style="width: auto; padding: 0 14px;" onclick="resetBackground()">سڕینەوە</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+        let foods = JSON.parse(localStorage.getItem('lux_foods')) || [
+            { id: 1, name: 'بيتزا ميكس', category: 'بيتزا', price: 8000, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200' },
+            { id: 2, name: 'لحم بالعجين', category: 'لحم بالعجين', price: 2000, img: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=200' },
+            { id: 3, name: 'كاهي و قيمر', category: 'كاهي', price: 4000, img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=200' },
+            { id: 4, name: 'شيش كباب', category: 'مشويات', price: 10000, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200' }
+        ];
+
+        let stories = JSON.parse(localStorage.getItem('lux_stories')) || [];
+        let orders = JSON.parse(localStorage.getItem('lux_orders')) || [];
+        let deliveryDrivers = JSON.parse(localStorage.getItem('lux_delivery_drivers')) || [];
+
+        let currentDeliveryUser = JSON.parse(localStorage.getItem('lux_current_delivery')) || null;
+        let currentCustomer = JSON.parse(localStorage.getItem('lux_current_customer')) || null;
+        let generatedOtpCode = null;
+
+        let restaurantStatus = localStorage.getItem('lux_restaurant_status') || 'open';
+        let telegramToken = localStorage.getItem('lux_telegram_token') || '';
+        let telegramChatId = localStorage.getItem('lux_telegram_chat_id') || '';
+
+        let cart = {};
+        let selectedCategory = 'هەموی';
+        let userCoords = null;
+
+        let currentStoryIndex = 0;
+        let storyProgressTimer = null;
+        const STORY_DURATION = 4000;
+
+        let deliveryMapInstances = {};
+
+        function updateRestaurantStatusUI() {
+            const headerBadge = document.getElementById('header-rest-status');
+            const submitBtn = document.getElementById('btn-submit-order');
+            const submitText = document.getElementById('btn-submit-text');
+
+            const btnOpen = document.getElementById('btn-status-open');
+            const btnClosed = document.getElementById('btn-status-closed');
+
+            if (restaurantStatus === 'open') {
+                headerBadge.className = 'rest-status-badge rest-open';
+                headerBadge.innerHTML = '🟢 کراوەیە';
+
+                submitBtn.disabled = false;
+                submitText.textContent = 'ناردنی داواکاری بۆ خواردنگە';
+
+                if (btnOpen) btnOpen.className = 'status-btn active-open';
+                if (btnClosed) btnClosed.className = 'status-btn';
+            } else {
+                headerBadge.className = 'rest-status-badge rest-closed';
+                headerBadge.innerHTML = '🔴 داخراوە';
+
+                submitBtn.disabled = true;
+                submitText.textContent = 'ببوورە! خواردنگە لە ئێستادا داخراوە';
+
+                if (btnOpen) btnOpen.className = 'status-btn';
+                if (btnClosed) btnClosed.className = 'status-btn active-closed';
+            }
         }
-      } catch (err) {
-        showStatus('پەیوەندی دروست نەبوو! تکایە VPN هەڵبکە یان ئینتەرنێت پشکنە.', 'bg-rose-900/50 text-rose-300 border border-rose-700');
-      }
-    }
 
-    // ناردنی پەیام بە ڕێگەی POST (کە کێشەی دەقی کوردی چارەسەر دەکات)
-    async function sendTelegramMessage() {
-      const token = document.getElementById('token').value.trim();
-      const chatId = document.getElementById('chatId').value.trim();
-      const message = document.getElementById('message').value.trim();
-
-      if(!token || !chatId || !message) {
-        return showStatus('تکایە هەموو خانەکان پڕ بکەرەوە!', 'bg-amber-900/50 text-amber-300 border border-amber-700');
-      }
-
-      showStatus('لە حالەتی ناردندایە...', 'bg-slate-700 text-slate-200');
-
-      try {
-        const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
-        });
-
-        const data = await response.json();
-
-        if(data.ok) {
-          showStatus('پەیامەکە بە سەرکەوتوویی گەیشتە تەلەگرام! 🎉', 'bg-emerald-900/50 text-emerald-300 border border-emerald-700');
-          document.getElementById('message').value = '';
-        } else {
-          showStatus(`هەڵە: ${data.description}`, 'bg-rose-900/50 text-rose-300 border border-rose-700');
+        function setRestaurantStatus(status) {
+            restaurantStatus = status;
+            localStorage.setItem('lux_restaurant_status', status);
+            updateRestaurantStatusUI();
+            alert(status === 'open' ? 'خواردنگە لە ئێستادا کرایەوە!' : 'خواردنگە داخرا!');
         }
-      } catch (err) {
-        showStatus('ناردنەکە فەیڵد بوو! تکایە VPN هەڵبکە و دووبارە تاقی بکەرەوە.', 'bg-rose-900/50 text-rose-300 border border-rose-700');
-      }
-    }
-  </script>
+
+        function saveTelegramSettings() {
+            const token = document.getElementById('tg-token-input').value.trim();
+            const chatId = document.getElementById('tg-chatid-input').value.trim();
+
+            localStorage.setItem('lux_telegram_token', token);
+            localStorage.setItem('lux_telegram_chat_id', chatId);
+
+            telegramToken = token;
+            telegramChatId = chatId;
+
+            alert('زانیارییەکانی تەلەگرام بۆت تۆمارکران!');
+        }
+
+        function updateCustomerUI() {
+            const btnText = document.getElementById('cust-btn-text');
+            const statusText = document.getElementById('cust-status-text');
+            const step1 = document.getElementById('cust-step-1');
+            const step2 = document.getElementById('cust-step-2');
+            const loggedSec = document.getElementById('cust-logged-in-sec');
+            const loggedPhone = document.getElementById('cust-logged-phone');
+
+            if (currentCustomer) {
+                btnText.textContent = currentCustomer.phone;
+                statusText.innerHTML = `<span style="color: var(--success); font-weight:bold;">✓ بەکارهێنەر: ${currentCustomer.phone}</span>`;
+                step1.style.display = 'none';
+                step2.style.display = 'none';
+                loggedSec.style.display = 'block';
+                loggedPhone.textContent = `ژمارەی مۆبایل: ${currentCustomer.phone}`;
+            } else {
+                btnText.textContent = 'چوونەژوورەوە';
+                statusText.innerHTML = `🔒 بەکارهێنەر: تۆمارنەکراوە (پێویستە بچیتە ژوورەوە)`;
+                step1.style.display = 'block';
+                step2.style.display = 'none';
+                loggedSec.style.display = 'none';
+            }
+        }
+
+        function openCustomerAuthModal() {
+            openModal('customer-auth-modal');
+            updateCustomerUI();
+        }
+
+        function sendOtpCode() {
+            const phone = document.getElementById('cust-phone-input').value.trim();
+            const pass = document.getElementById('cust-pass-input').value.trim();
+
+            if (!phone || !pass) {
+                alert('تکایە ژمارەی مۆبایل و وشەی نهێنی بنووسە!');
+                return;
+            }
+
+            generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
+            alert(`کۆدی پشتڕاستکردنەوەکەت: ${generatedOtpCode}`);
+
+            document.getElementById('cust-step-1').style.display = 'none';
+            document.getElementById('cust-step-2').style.display = 'block';
+        }
+
+        function verifyAndLoginCustomer() {
+            const enteredOtp = document.getElementById('cust-otp-input').value.trim();
+            const phone = document.getElementById('cust-phone-input').value.trim();
+            const pass = document.getElementById('cust-pass-input').value.trim();
+
+            if (enteredOtp === generatedOtpCode) {
+                currentCustomer = { phone: phone, pass: pass };
+                localStorage.setItem('lux_current_customer', JSON.stringify(currentCustomer));
+                updateCustomerUI();
+                closeModal('customer-auth-modal');
+                alert('تۆماربوون بەیارمەتی سەرکەوتووانە ئەنجامدرا!');
+            } else {
+                alert('کۆدی پشتڕاستکردنەوە هەڵەیە!');
+            }
+        }
+
+        function logoutCustomer() {
+            currentCustomer = null;
+            localStorage.removeItem('lux_current_customer');
+            updateCustomerUI();
+            closeModal('customer-auth-modal');
+            alert('لە هەژمارەکەت چوویتە دەرەوە!');
+        }
+
+        function getLocation() {
+            const btn = document.getElementById('btn-get-loc');
+            const btnText = document.getElementById('loc-btn-text');
+            btnText.textContent = 'چاوەڕوان بە...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userCoords = {
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude
+                        };
+                        btn.classList.add('active');
+                        btnText.textContent = 'شوێن وەرگیرا ✓';
+                    },
+                    (err) => {
+                        alert('تکایە GPSی مۆبایلەکەت هەڵبکە یان ڕێگە بە شوێن بدە.');
+                        btnText.textContent = 'دیاریکردنی شوێنەکەم';
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else {
+                alert('GPS لەم وەگەڕە پشتیوانی ناکرێت.');
+                btnText.textContent = 'دیاریکردنی شوێنەکەم';
+            }
+        }
+
+        function toggleDeliveryInlineMap(orderId, lat, lng, phone) {
+            const mapContainer = document.getElementById(`del-map-box-${orderId}`);
+            if (!mapContainer) return;
+
+            if (mapContainer.style.display === 'block') {
+                mapContainer.style.display = 'none';
+                return;
+            }
+
+            mapContainer.style.display = 'block';
+
+            setTimeout(() => {
+                if (!deliveryMapInstances[orderId]) {
+                    const map = L.map(`del-map-elem-${orderId}`).setView([lat, lng], 16);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    L.marker([lat, lng]).addTo(map)
+                        .bindPopup(`<b>کاستۆمەر: ${phone}</b>`)
+                        .openPopup();
+
+                    deliveryMapInstances[orderId] = map;
+                } else {
+                    deliveryMapInstances[orderId].invalidateSize();
+                }
+            }, 250);
+        }
+
+        function sendOrderToTelegram(msgText) {
+            if (!telegramToken || !telegramChatId) return;
+
+            const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    text: msgText
+                })
+            }).catch(err => console.error("خەتا لە ناردن بۆ تەلەگرام:", err));
+        }
+
+        // 🎯 بەشی ناردنی داواکاری (بە بێ واتسئاپ - ڕاستەوخۆ بۆ ئەدمین)
+        function submitDirectOrder() {
+            if (restaurantStatus === 'closed') {
+                alert('ببوورە! خواردنگە لە ئێستادا داخراوە.');
+                return;
+            }
+
+            if (!currentCustomer) {
+                alert('تکایە سەرەتا خۆت تۆمار بکە یان بچۆ ژوورەوە!');
+                openCustomerAuthModal();
+                return;
+            }
+
+            const phone = currentCustomer.phone;
+            const note = document.getElementById('order-note').value.trim();
+
+            let orderItems = [];
+            let total = 0;
+
+            for (let id in cart) {
+                const item = foods.find(f => f.id == id);
+                if (item && cart[id] > 0) {
+                    orderItems.push({ name: item.name, qty: cart[id], price: item.price });
+                    total += item.price * cart[id];
+                }
+            }
+
+            if (orderItems.length === 0) {
+                alert('تکایە سەرەتا خواردنێک دیاریبکە!');
+                return;
+            }
+
+            const newOrder = {
+                id: Date.now(),
+                phone: phone,
+                note: note || 'هیچ تێبینییەک نییە',
+                coords: userCoords,
+                items: orderItems,
+                totalPrice: total,
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                status: 'چاوەڕوانە',
+                assignedDriverId: null,
+                assignedDriverName: null
+            };
+
+            orders.unshift(newOrder);
+            localStorage.setItem('lux_orders', JSON.stringify(orders));
+
+            let msg = `*داواکاری نوێ لە خواردنگەی یوسف* 🍕\n\n`;
+            msg += `📱 *ژمارەی مۆبایلی کڕیار:* ${phone}\n`;
+            msg += `📝 *تێبینی/ناونیشان:* ${newOrder.note}\n`;
+            msg += `🕒 *کات:* ${newOrder.time}\n\n`;
+            msg += `📋 *لیستی خواردنەکان:*\n`;
+
+            orderItems.forEach(item => {
+                msg += `• ${item.name} (${item.qty} دانە) - ${(item.price * item.qty).toLocaleString()} IQD\n`;
+            });
+
+            msg += `\n💰 *کۆی گشتی:* ${total.toLocaleString()} IQD\n`;
+
+            if (userCoords) {
+                msg += `📍 *لوکەیشنی GPS:* https://www.google.com/maps?q=${userCoords.lat},${userCoords.lng}\n`;
+            }
+
+            // 🤖 ناردنی بێدەنگ بۆ تەلەگرام ئەگەر بەسترا بێت
+            sendOrderToTelegram(msg);
+
+            cart = {};
+            userCoords = null;
+            document.getElementById('order-note').value = '';
+            document.getElementById('btn-get-loc').classList.remove('active');
+            document.getElementById('loc-btn-text').textContent = 'دیاریکردنی شوێنەکەم';
+            renderMenu();
+
+            alert('داواکارییەکەت بە سەرکەوتوویی تۆمارکرا و ڕەوانەی بەشی ئەدمین کرا! داواکارییەکەت لە کاتێکی کەمدا جێبەجێ دەکرێت.');
+        }
+
+        function renderAdminMessenger() {
+            const container = document.getElementById('admin-messenger-list');
+            document.getElementById('msg-count-badge').textContent = orders.length;
+
+            if (orders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 20px;">هیچ نامە و داواکارییەکی نوێ نییە</div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(o => {
+                const driverOptions = deliveryDrivers.map(d => 
+                    `<option value="${d.id}" ${o.assignedDriverId == d.id ? 'selected' : ''}>${d.name}</option>`
+                ).join('');
+
+                return `
+                <div class="msg-card">
+                    <div class="msg-header">
+                        <span class="msg-user"><i class="fa-solid fa-user"></i> ${o.phone}</span>
+                        <span class="msg-time">${o.time}</span>
+                    </div>
+                    <div class="msg-body">
+                        <div class="msg-items">
+                            ${o.items.map(i => `<div>• ${i.name} (${i.qty} دانە) - ${(i.price * i.qty).toLocaleString()} IQD</div>`).join('')}
+                        </div>
+                        <div><strong>کۆی گشتی:</strong> <span style="color:var(--accent-gold);">${o.totalPrice.toLocaleString()} IQD</span></div>
+                        <div><strong>تێبینی/ناونیشان:</strong> ${o.note}</div>
+                        ${o.coords ? `
+                            <a href="https://www.google.com/maps?q=${o.coords.lat},${o.coords.lng}" target="_blank" class="btn-map-app">
+                                <i class="fa-solid fa-map-location-dot"></i> نیشاندانی شوێن لە Google Maps
+                            </a>
+                        ` : `<div style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">(شوێن دیاری نەکراوە)</div>`}
+
+                        <div style="margin-top: 10px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;">
+                            <label style="font-size: 0.75rem; color: var(--accent-gold); display: block; margin-bottom: 4px;">ناردنی ئۆردەر بۆ سایەقی دەیڤەری:</label>
+                            <div style="display: flex; gap: 6px;">
+                                <select id="driver-select-${o.id}" class="input-box" style="margin: 0; padding: 4px 8px;">
+                                    <option value="">-- سایەقێک هەڵبژێرە --</option>
+                                    ${driverOptions}
+                                </select>
+                                <button class="btn-location" style="white-space: nowrap;" onclick="assignDriverToOrder(${o.id})">ناردن</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="msg-footer">
+                        <span class="status-badge ${o.status === 'گەیەندرا' ? 'badge-delivered' : 'badge-pending'}">
+                            بارودۆخ: ${o.status} ${o.assignedDriverName ? `(${o.assignedDriverName})` : ''}
+                        </span>
+                        <button class="btn-delete" onclick="deleteOrder(${o.id})"><i class="fa-solid fa-trash"></i> سڕینەوە</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function assignDriverToOrder(orderId) {
+            const select = document.getElementById(`driver-select-${orderId}`);
+            const driverId = select.value;
+            if (!driverId) {
+                alert('تکایە سەرەتا سایەقێک هەڵبژێرە!');
+                return;
+            }
+            const driver = deliveryDrivers.find(d => d.id == driverId);
+            const order = orders.find(o => o.id == orderId);
+            if (order && driver) {
+                order.assignedDriverId = driver.id;
+                order.assignedDriverName = driver.name;
+                order.status = 'نێردرا بۆ دەیڤەری';
+                localStorage.setItem('lux_orders', JSON.stringify(orders));
+                renderAdminMessenger();
+                renderDeliveryDashboard();
+                alert(`داواکارییەکە ڕەوانەی سایەق (${driver.name}) کراوە!`);
+            }
+        }
+
+        function deleteOrder(id) {
+            if (confirm("دڵنیای لە سڕینەوەی ئەم داواکارییە؟")) {
+                orders = orders.filter(o => o.id !== id);
+                localStorage.setItem('lux_orders', JSON.stringify(orders));
+                renderAdminMessenger();
+                renderDeliveryDashboard();
+            }
+        }
+
+        function openDeliveryModal() {
+            openModal('delivery-modal');
+            if (currentDeliveryUser) {
+                document.getElementById('delivery-login-sec').style.display = 'none';
+                document.getElementById('delivery-dashboard-sec').style.display = 'block';
+                renderDeliveryDashboard();
+            } else {
+                document.getElementById('delivery-login-sec').style.display = 'block';
+                document.getElementById('delivery-dashboard-sec').style.display = 'none';
+            }
+        }
+
+        function loginDelivery() {
+            const u = document.getElementById('delivery-user-input').value.trim();
+            const p = document.getElementById('delivery-pass-input').value.trim();
+
+            const found = deliveryDrivers.find(d => d.user === u && d.pass === p);
+            if (found) {
+                currentDeliveryUser = found;
+                localStorage.setItem('lux_current_delivery', JSON.stringify(found));
+                document.getElementById('delivery-user-input').value = '';
+                document.getElementById('delivery-pass-input').value = '';
+                openDeliveryModal();
+            } else {
+                alert('یوزەرنەیم یان پاسۆردی دەیڤەری هەڵەیە!');
+            }
+        }
+
+        function logoutDelivery() {
+            currentDeliveryUser = null;
+            localStorage.removeItem('lux_current_delivery');
+            openDeliveryModal();
+        }
+
+        function renderDeliveryDashboard() {
+            const container = document.getElementById('delivery-orders-list');
+            if (!container || !currentDeliveryUser) return;
+
+            const myOrders = orders.filter(o => o.assignedDriverId == currentDeliveryUser.id);
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: var(--text-muted); padding: 15px;">هیچ داواکارییەکی نوێ بۆ تۆ ڕەوانە نەکراوە</div>`;
+                return;
+            }
+
+            container.innerHTML = myOrders.map(o => `
+                <div class="delivery-card">
+                    <div style="display:flex; justify-content:space-between; color: var(--accent-gold); font-weight:bold; margin-bottom: 6px;">
+                        <span><i class="fa-solid fa-phone"></i> ${o.phone}</span>
+                        <span>${o.totalPrice.toLocaleString()} IQD</span>
+                    </div>
+                    <div style="font-size:0.8rem; color:#ccc; margin-bottom: 8px;">
+                        <div><strong>خواردنەکان:</strong> ${o.items.map(i => i.name + ` (${i.qty})`).join(', ')}</div>
+                        <div><strong>تێبینی/ناونیشان:</strong> ${o.note}</div>
+                        <div><strong>بارودۆخ:</strong> <span style="color:var(--accent-gold);">${o.status}</span></div>
+
+                        ${o.coords ? `
+                            <button class="btn-map-app" onclick="toggleDeliveryInlineMap(${o.id}, ${o.coords.lat}, ${o.coords.lng}, '${o.phone}')">
+                                <i class="fa-solid fa-map-location-dot"></i> کردنەوە / داخستنی نەخشە لەناو پەنێڵ
+                            </button>
+                            
+                            <div id="del-map-box-${o.id}" style="display:none; margin-top:8px;">
+                                <div id="del-map-elem-${o.id}" class="delivery-inline-map"></div>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${o.coords.lat},${o.coords.lng}" target="_blank" class="btn-map-app" style="background:var(--success); color:#000; font-weight:bold; width:100%; justify-content:center;">
+                                    <i class="fa-solid fa-location-arrow"></i> ڕێنیشاندەری Google Maps (GPS Navigation)
+                                </a>
+                            </div>
+                        ` : `<div style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">(لوکەیپشنی GPS تۆمارنەکراوە)</div>`}
+                    </div>
+
+                    ${o.status === 'نێردرا بۆ دەیڤەری' ? 
+                        `<button class="btn-accept" style="background: var(--accent-gold); color: #000;" onclick="acceptDeliveryOrder(${o.id})"><i class="fa-solid fa-check"></i> موافقە (پەسەندکردنی داواکاری)</button>` : ''
+                    }
+                    ${o.status === 'وەرگیرا' ? 
+                        `<button class="btn-accept" style="background: var(--success); color: #fff;" onclick="markOrderDelivered(${o.id})"><i class="fa-solid fa-circle-check"></i> گەیەندرا (تەواوکردنی داواکاری)</button>` : ''
+                    }
+                    ${o.status === 'گەیەندرا' ? 
+                        `<div style="color:var(--success); font-weight:bold; font-size:0.85rem; text-align:center; padding: 6px; background: rgba(37,211,102,0.1); border-radius:6px;">✓ ئەم داواکارییە بە سەرکەوتوویی گەیەندرا</div>` : ''
+                    }
+                </div>
+            `).join('');
+        }
+
+        function acceptDeliveryOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = 'وەرگیرا';
+                localStorage.setItem('lux_orders', JSON.stringify(orders));
+                renderDeliveryDashboard();
+                renderAdminMessenger();
+                alert('داواکارییەکە پەسەندکرا!');
+            }
+        }
+
+        function markOrderDelivered(id) {
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = 'گەیەندرا';
+                localStorage.setItem('lux_orders', JSON.stringify(orders));
+                renderDeliveryDashboard();
+                renderAdminMessenger();
+                alert('داواکارییەکە وەک گەیەندرا تۆمارکرا!');
+            }
+        }
+
+        function addDeliveryDriver() {
+            const name = document.getElementById('del-driver-name').value.trim();
+            const user = document.getElementById('del-driver-user').value.trim();
+            const pass = document.getElementById('del-driver-pass').value.trim();
+
+            if (!name || !user || !pass) return alert('تکایە هەموو خانەکان پڕبکەرەوە!');
+
+            deliveryDrivers.push({ id: Date.now(), name, user, pass });
+            localStorage.setItem('lux_delivery_drivers', JSON.stringify(deliveryDrivers));
+
+            document.getElementById('del-driver-name').value = '';
+            document.getElementById('del-driver-user').value = '';
+            document.getElementById('del-driver-pass').value = '';
+
+            renderAdminDeliveryDrivers();
+            renderAdminMessenger();
+            alert('سایەقی دەیڤەری تۆمارکرا!');
+        }
+
+        function deleteDeliveryDriver(id) {
+            if (confirm("دڵنیای لە سڕینەوەی ئەم سایەقە؟")) {
+                deliveryDrivers = deliveryDrivers.filter(d => d.id !== id);
+                localStorage.setItem('lux_delivery_drivers', JSON.stringify(deliveryDrivers));
+                renderAdminDeliveryDrivers();
+                renderAdminMessenger();
+            }
+        }
+
+        function renderAdminDeliveryDrivers() {
+            const container = document.getElementById('admin-delivery-drivers-list');
+            container.innerHTML = deliveryDrivers.map(d => `
+                <div class="admin-item-row">
+                    <div class="admin-item-info">
+                        <i class="fa-solid fa-motorcycle" style="color: var(--info); font-size: 1.2rem;"></i>
+                        <div>
+                            <div style="font-weight: bold; font-size: 0.85rem;">${d.name}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">یوزەر: ${d.user} | پاسۆرد: ${d.pass}</div>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteDeliveryDriver(${d.id})">سڕینەوە</button>
+                </div>
+            `).join('');
+        }
+
+        function cleanExpiredStories() {
+            const now = Date.now();
+            let hasChanged = false;
+            stories = stories.filter(s => {
+                if (!s.createdAt) { s.createdAt = now; hasChanged = true; }
+                const isValid = (now - s.createdAt) < TWENTY_FOUR_HOURS;
+                if (!isValid) hasChanged = true;
+                return isValid;
+            });
+            if (hasChanged) localStorage.setItem('lux_stories', JSON.stringify(stories));
+        }
+
+        function renderStories() {
+            cleanExpiredStories();
+            const container = document.getElementById('stories-bar');
+            if (!stories.length) { container.style.display = 'none'; return; }
+            container.style.display = 'flex';
+            container.innerHTML = stories.map((s, idx) => `
+                <div class="story-item" onclick="openStoryViewer(${idx})">
+                    <div class="story-ring"><img src="${s.img}" onerror="this.src='https://via.placeholder.com/100'"></div>
+                    <span class="story-title">${s.title || 'ستۆری'}</span>
+                </div>
+            `).join('');
+        }
+
+        function openStoryViewer(index) {
+            cleanExpiredStories();
+            if (!stories.length) return;
+            document.getElementById('story-viewer-modal').style.display = 'flex';
+            showStory(index);
+        }
+
+        function showStory(index) {
+            if (index < 0 || index >= stories.length) { closeStoryViewer(); return; }
+            currentStoryIndex = index;
+            const story = stories[index];
+            const progressContainer = document.getElementById('story-progress-container');
+            progressContainer.innerHTML = stories.map((_, i) => `<div class="story-progress-segment"><div class="story-progress-fill" id="fill-${i}"></div></div>`).join('');
+
+            for (let i = 0; i < stories.length; i++) {
+                const fill = document.getElementById(`fill-${i}`);
+                if (i < index) fill.style.width = '100%';
+                else fill.style.width = '0%';
+            }
+
+            document.getElementById('story-viewer-img').src = story.img;
+            document.getElementById('story-viewer-caption').textContent = story.caption || '';
+            document.getElementById('story-viewer-title').textContent = story.title || 'خواردنگەی یوسف';
+            startStoryProgress();
+        }
+
+        function startStoryProgress() {
+            if (storyProgressTimer) clearInterval(storyProgressTimer);
+            let startTime = Date.now();
+            const currentFill = document.getElementById(`fill-${currentStoryIndex}`);
+            storyProgressTimer = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let pct = (elapsed / STORY_DURATION) * 100;
+                if (currentFill) currentFill.style.width = Math.min(pct, 100) + '%';
+                if (elapsed >= STORY_DURATION) { clearInterval(storyProgressTimer); nextStory(); }
+            }, 30);
+        }
+
+        function nextStory() {
+            if (currentStoryIndex + 1 < stories.length) showStory(currentStoryIndex + 1);
+            else closeStoryViewer();
+        }
+
+        function prevStory() {
+            if (currentStoryIndex - 1 >= 0) showStory(currentStoryIndex - 1);
+            else showStory(0);
+        }
+
+        function handleStoryTap(event) {
+            if (event.target.classList.contains('story-close-btn')) return;
+            const card = document.getElementById('story-viewer-card');
+            const rect = card.getBoundingClientRect();
+            if ((event.clientX - rect.left) > rect.width * 0.4) nextStory();
+            else prevStory();
+        }
+
+        function closeStoryViewer(e) {
+            if (e) e.stopPropagation();
+            if (storyProgressTimer) clearInterval(storyProgressTimer);
+            document.getElementById('story-viewer-modal').style.display = 'none';
+        }
+
+        function addNewStory() {
+            const title = document.getElementById('story-title-input').value.trim();
+            const img = document.getElementById('story-img-input').value.trim();
+            const caption = document.getElementById('story-caption-input').value.trim();
+
+            if (!img) return alert('تکایە لینکی وێنەکە بنووسە!');
+            stories.push({ id: Date.now(), title: title || 'ستۆری', img, caption, createdAt: Date.now() });
+            localStorage.setItem('lux_stories', JSON.stringify(stories));
+            document.getElementById('story-title-input').value = '';
+            document.getElementById('story-img-input').value = '';
+            document.getElementById('story-caption-input').value = '';
+            renderStories();
+            renderAdminStoryList();
+            alert('ستۆری نوێ زیادکرا!');
+        }
+
+        function deleteStory(id) {
+            if (confirm("دڵنیای لە سڕینەوەی ئەم ستۆرییە؟")) {
+                stories = stories.filter(s => s.id !== id);
+                localStorage.setItem('lux_stories', JSON.stringify(stories));
+                renderStories();
+                renderAdminStoryList();
+            }
+        }
+
+        function renderAdminStoryList() {
+            cleanExpiredStories();
+            const list = document.getElementById('admin-story-list');
+            list.innerHTML = stories.map(s => `
+                <div class="admin-item-row">
+                    <div class="admin-item-info">
+                        <img src="${s.img}" onerror="this.src='https://via.placeholder.com/40'">
+                        <div style="font-weight: bold; font-size: 0.85rem;">${s.title}</div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteStory(${s.id})">سڕینەوە</button>
+                </div>
+            `).join('');
+        }
+
+        function switchAdminTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function applyBackground() {
+            const bgUrl = localStorage.getItem('lux_bg_image');
+            if (bgUrl) document.body.style.backgroundImage = `linear-gradient(rgba(13, 13, 17, 0.85), rgba(13, 13, 17, 0.85)), url('${bgUrl}')`;
+            else document.body.style.backgroundImage = 'none';
+        }
+        applyBackground();
+
+        function updateBackground() {
+            const url = document.getElementById('bg-image-url').value.trim();
+            if (!url) return alert('تکایە لینکێک بنووسە!');
+            localStorage.setItem('lux_bg_image', url);
+            applyBackground();
+            alert('پاشبنەما گۆڕدرا!');
+        }
+
+        function resetBackground() {
+            localStorage.removeItem('lux_bg_image');
+            document.getElementById('bg-image-url').value = '';
+            applyBackground();
+            alert('پاشبنەما گەڕێنرایەوە باری ئاسایی!');
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('live-time').textContent = now.toLocaleTimeString('en-US');
+            document.getElementById('live-date').textContent = now.toLocaleDateString('en-GB');
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        function renderCategories() {
+            const categoriesBar = document.getElementById('categories-bar');
+            const datalist = document.getElementById('category-list');
+            const uniqueCategories = [...new Set(foods.map(item => item.category))];
+            const categories = ['هەموی', ...uniqueCategories];
+            categoriesBar.innerHTML = categories.map(cat => `<button class="cat-btn ${selectedCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}')">${cat}</button>`).join('');
+            datalist.innerHTML = uniqueCategories.map(cat => `<option value="${cat}">`).join('');
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            const filtered = selectedCategory === 'هەموی' ? foods : foods.filter(f => f.category === selectedCategory);
+            grid.innerHTML = filtered.map(food => {
+                const qty = cart[food.id] || 0;
+                return `
+                    <div class="food-card">
+                        <img src="${food.img}" loading="lazy" alt="${food.name}" onerror="this.src='https://via.placeholder.com/150'">
+                        <div class="food-info">
+                            <div class="food-title">${food.name}</div>
+                            <div class="food-price">${food.price.toLocaleString()} IQD</div>
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="updateQty(${food.id}, -1)">-</button>
+                                <span class="qty-val">${qty}</span>
+                                <button class="qty-btn" onclick="updateQty(${food.id}, 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            updateCartTotal();
+        }
+
+        function updateQty(id, change) {
+            cart[id] = (cart[id] || 0) + change;
+            if (cart[id] <= 0) delete cart[id];
+            renderMenu();
+        }
+
+        function updateCartTotal() {
+            let total = 0;
+            for (let id in cart) {
+                const item = foods.find(f => f.id == id);
+                if (item) total += item.price * cart[id];
+            }
+            document.getElementById('cart-total').textContent = total.toLocaleString() + ' IQD';
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if (id === 'admin-panel-modal') {
+                renderAdminMessenger();
+                renderAdminList();
+                renderAdminStoryList();
+                renderAdminDeliveryDrivers();
+                updateRestaurantStatusUI();
+
+                if(document.getElementById('tg-token-input')) document.getElementById('tg-token-input').value = telegramToken;
+                if(document.getElementById('tg-chatid-input')) document.getElementById('tg-chatid-input').value = telegramChatId;
+            }
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function openAdminModal() {
+            const isAdminLogged = localStorage.getItem('lux_admin_logged_in') === 'true';
+            if (isAdminLogged) {
+                openModal('admin-panel-modal');
+            } else {
+                openModal('admin-login-modal');
+            }
+        }
+
+        function loginAdmin() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+
+            if (u === 'youssef051' && p === 'Youssef12345ye') {
+                localStorage.setItem('lux_admin_logged_in', 'true');
+                closeModal('admin-login-modal');
+                openModal('admin-panel-modal');
+                document.getElementById('admin-user').value = '';
+                document.getElementById('admin-pass').value = '';
+            } else {
+                alert('یوزەرنەیم یان پاسۆرد هەڵەیە!');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('lux_admin_logged_in');
+            closeModal('admin-panel-modal');
+            alert('لە هەژماری ئەدمین چوویتە دەرەوە!');
+        }
+
+        function addNewFood() {
+            const cat = document.getElementById('food-category').value.trim();
+            const name = document.getElementById('food-name').value.trim();
+            const price = parseFloat(document.getElementById('food-price').value);
+            const img = document.getElementById('food-image').value.trim();
+
+            if (!cat || !name || !price) return alert('زانیارییەکان پڕبکەرەوە!');
+
+            foods.push({ id: Date.now(), name, category: cat, price, img: img || 'https://via.placeholder.com/150' });
+            saveData();
+            document.getElementById('food-category').value = '';
+            document.getElementById('food-name').value = '';
+            document.getElementById('food-price').value = '';
+            document.getElementById('food-image').value = '';
+            renderAdminList();
+            alert('خواردن زیادکرا!');
+        }
+
+        function deleteFood(id) {
+            if (confirm("دڵنیای لە سڕینەوەی ئەم خواردنە؟")) {
+                foods = foods.filter(f => f.id !== id);
+                if (cart[id]) delete cart[id];
+                saveData();
+                renderAdminList();
+            }
+        }
+
+        function renderAdminList() {
+            const listContainer = document.getElementById('admin-food-list');
+            listContainer.innerHTML = foods.map(item => `
+                <div class="admin-item-row">
+                    <div class="admin-item-info">
+                        <img src="${item.img}" onerror="this.src='https://via.placeholder.com/40'">
+                        <div>
+                            <div style="font-weight: bold; font-size: 0.85rem;">${item.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-gold);">${item.category} - ${item.price.toLocaleString()} IQD</div>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteFood(${item.id})">سڕینەوە</button>
+                </div>
+            `).join('');
+        }
+
+        function saveData() {
+            localStorage.setItem('lux_foods', JSON.stringify(foods));
+            renderCategories();
+            renderMenu();
+        }
+
+        function sendComplaint() {
+            const text = document.getElementById('complaint-text').value;
+            if (!text) return;
+            alert('گڵەیییەکەت بەسەرکەوتوویی گەیشت!');
+            closeModal('complaint-modal');
+        }
+
+        updateRestaurantStatusUI();
+        updateCustomerUI();
+        renderStories();
+        renderCategories();
+        renderMenu();
+    </script>
 </body>
 </html>
