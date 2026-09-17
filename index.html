@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -147,7 +147,6 @@
             background: rgba(212, 175, 55, 0.1);
         }
 
-        /* 🟢 باری کراوە/داخراو لە هەدەر */
         .rest-status-badge {
             padding: 3px 10px;
             border-radius: 12px;
@@ -584,7 +583,6 @@
         </button>
     </div>
 
-    <!-- 📱 مۆداڵی تۆماربوون / چوونەژوورەوەی کڕیار بە ژمارەی مۆبایل و کۆد -->
     <div class="modal" id="customer-auth-modal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark close-btn" onclick="closeModal('customer-auth-modal')"></i>
@@ -699,7 +697,6 @@
                 <h3 style="color: var(--accent-gold);">کۆنترۆڵ 💡</h3>
             </div>
 
-            <!-- 🔴 گۆڕینی باری خواردنگە (کراوەیە / داخراوە) -->
             <div class="status-toggle-box">
                 <label style="font-size: 0.82rem; color: var(--accent-gold); font-weight: bold;"><i class="fa-solid fa-store"></i> باری کارکردنی خواردنگە:</label>
                 <div class="status-btn-group">
@@ -793,12 +790,11 @@
                 <div id="admin-delivery-drivers-list"></div>
             </div>
 
-            <!-- 🤖 بەشی بەستنەوەی تەلەگرام بۆت (Telegram Bot Settings) -->
             <div class="tab-content" id="tab-telegram">
                 <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
                     <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-brands fa-telegram" style="color:#0088cc;"></i> بەستنەوەی تەلەگرام بۆت</h4>
                     <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
-                        تەلەگرام بۆت ئۆتۆماتیک تەواوی داواکارییە نوێیەکان بە بێدەنگی ڕەوانەی تەلەگرامەکەت (`07828372961`) دەکات.
+                        تەلەگرام بۆت ئۆتۆماتیک تەواوی داواکارییە نوێیەکان بە بێدەنگی ڕەوانەی تەلەگرامەکەت دەکات.
                     </p>
                     <div class="form-group">
                         <label>Bot Token (لە BotFather وەریگرە):</label>
@@ -847,10 +843,8 @@
         let currentCustomer = JSON.parse(localStorage.getItem('lux_current_customer')) || null;
         let generatedOtpCode = null;
 
-        // 🏪 باری خواردنگە (کراوەیە یان داخراوە)
         let restaurantStatus = localStorage.getItem('lux_restaurant_status') || 'open';
 
-        // 🤖 زانیارییەکانی تەلەگرام بۆت
         let telegramToken = localStorage.getItem('lux_telegram_token') || '';
         let telegramChatId = localStorage.getItem('lux_telegram_chat_id') || '';
 
@@ -864,7 +858,6 @@
 
         let deliveryMapInstances = {};
 
-        // 🟢 نوێکردنەوەی باری کراوە/داخراوی خواردنگە لە سەرەوە و لە فۆڕم
         function updateRestaurantStatusUI() {
             const headerBadge = document.getElementById('header-rest-status');
             const submitBtn = document.getElementById('btn-submit-order');
@@ -901,7 +894,6 @@
             alert(status === 'open' ? 'خواردنگە لە ئێستادا کرایەوە! کڕیاران دەتوانن داواکاری بنێرن.' : 'خواردنگە داخرا! ناردنی داواکاری ڕاگیرا.');
         }
 
-        // 🤖 زانیاری تەلەگرام بۆت تۆمار بکه
         function saveTelegramSettings() {
             const token = document.getElementById('tg-token-input').value.trim();
             const chatId = document.getElementById('tg-chatid-input').value.trim();
@@ -915,7 +907,6 @@
             alert('زانیارییەکانی تەلەگرام بۆت بە سەرکەوتوویی تۆمارکران!');
         }
 
-        // 📱 بەشی چوونەژوورەوەی کڕیار بە مۆبایل و کۆد (OTP)
         function updateCustomerUI() {
             const btnText = document.getElementById('cust-btn-text');
             const statusText = document.getElementById('cust-status-text');
@@ -1067,7 +1058,6 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // 🤖 ناردنی داواکاری بۆ تەلەگرام لە ڕێگەی Bot API
         function sendOrderToTelegram(msgText) {
             if (!telegramToken || !telegramChatId) return;
 
@@ -1083,7 +1073,6 @@
         }
 
         function submitDirectOrder() {
-            // 🛑 پشکنینی باری خواردنگە
             if (restaurantStatus === 'closed') {
                 alert('ببوورە! خواردنگە لە ئێستادا داخراوە و ناتوانیت داواکاری بنێریت.');
                 return;
@@ -1146,7 +1135,6 @@
                 msg += `📍 *لوکەیشنی GPS:* https://www.google.com/maps?q=${userCoords.lat},${userCoords.lng}\n`;
             }
 
-            // 🤖 ناردنی بێدەنگ بۆ تەلەگرام ئەگەر بەسترا بێت
             sendOrderToTelegram(msg);
 
             cart = {};
@@ -1156,10 +1144,7 @@
             document.getElementById('loc-btn-text').textContent = 'دیاریکردنی شوێنەکەم';
             renderMenu();
 
-            const targetPhone = "9647508826695";
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encodeURIComponent(msg)}`;
-            
-            window.open(whatsappUrl, '_blank');
+            alert('داواکارییەکەت بە سەرکەوتوویی بۆ خواردنگە نێردرا!');
         }
 
         function renderAdminMessenger() {
@@ -1631,7 +1616,6 @@
                 renderAdminDeliveryDrivers();
                 updateRestaurantStatusUI();
 
-                // دابینکردنی زانیاری تەلەگرام لە خانەکان
                 if(document.getElementById('tg-token-input')) document.getElementById('tg-token-input').value = telegramToken;
                 if(document.getElementById('tg-chatid-input')) document.getElementById('tg-chatid-input').value = telegramChatId;
             }
@@ -1639,7 +1623,6 @@
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // 🔐 بەڕێوەبردنی باری چوونەژوورەوەی ئەدمین
         function openAdminModal() {
             const isAdminLogged = localStorage.getItem('lux_admin_logged_in') === 'true';
             if (isAdminLogged) {
@@ -1650,24 +1633,24 @@
         }
 
         function loginAdmin() {
-            const u = document.getElementById('admin-user').value;
-            const p = document.getElementById('admin-pass').value;
+            const u = document.getElementById('admin-user').value.trim();
+            const p = document.getElementById('admin-pass').value.trim();
 
             if (u === 'youssef051' && p === 'Youssef12345ye') {
                 localStorage.setItem('lux_admin_logged_in', 'true');
-                closeModal('admin-login-modal');
-                openModal('admin-panel-modal');
                 document.getElementById('admin-user').value = '';
                 document.getElementById('admin-pass').value = '';
+                closeModal('admin-login-modal');
+                openModal('admin-panel-modal');
             } else {
-                alert('یوزەرنەیم یان پاسۆرد هەڵەیە!');
+                alert('یوزەرنەیم یان پاسۆردی ئەدمین هەڵەیە!');
             }
         }
 
         function logoutAdmin() {
             localStorage.removeItem('lux_admin_logged_in');
             closeModal('admin-panel-modal');
-            alert('لە هەژماری ئەدمین چوویتە دەرەوە!');
+            alert('لە ئەدمین پەنێڵ چوویتە دەرەوە!');
         }
 
         function addNewFood() {
@@ -1676,61 +1659,80 @@
             const price = parseFloat(document.getElementById('food-price').value);
             const img = document.getElementById('food-image').value.trim();
 
-            if (!cat || !name || !price) return alert('زانیارییەکان پڕبکەرەوە!');
+            if (!cat || !name || isNaN(price) || price <= 0) {
+                alert('تکایە سەرجەم زانیارییەکان بە دروستی بنووسە!');
+                return;
+            }
 
-            foods.push({ id: Date.now(), name, category: cat, price, img: img || 'https://via.placeholder.com/150' });
-            saveData();
-            document.getElementById('food-category').value = '';
+            const newFood = {
+                id: Date.now(),
+                name: name,
+                category: cat,
+                price: price,
+                img: img || 'https://via.placeholder.com/200'
+            };
+
+            foods.push(newFood);
+            localStorage.setItem('lux_foods', JSON.stringify(foods));
+
             document.getElementById('food-name').value = '';
             document.getElementById('food-price').value = '';
             document.getElementById('food-image').value = '';
+
+            renderCategories();
+            renderMenu();
             renderAdminList();
-            alert('خواردن زیادکرا!');
+            alert('خواردنی نوێ بە سەرکەوتوویی زیادکرا!');
         }
 
         function deleteFood(id) {
-            if (confirm("دڵنیای لە سڕینەوەی ئەم خواردنە؟")) {
+            if (confirm('دڵنیای لە سڕینەوەی ئەم خواردنە؟')) {
                 foods = foods.filter(f => f.id !== id);
-                if (cart[id]) delete cart[id];
-                saveData();
+                localStorage.setItem('lux_foods', JSON.stringify(foods));
+                renderCategories();
+                renderMenu();
                 renderAdminList();
             }
         }
 
         function renderAdminList() {
-            const listContainer = document.getElementById('admin-food-list');
-            listContainer.innerHTML = foods.map(item => `
+            const list = document.getElementById('admin-food-list');
+            if (!list) return;
+            list.innerHTML = foods.map(f => `
                 <div class="admin-item-row">
                     <div class="admin-item-info">
-                        <img src="${item.img}" onerror="this.src='https://via.placeholder.com/40'">
+                        <img src="${f.img}" onerror="this.src='https://via.placeholder.com/40'">
                         <div>
-                            <div style="font-weight: bold; font-size: 0.85rem;">${item.name}</div>
-                            <div style="font-size: 0.75rem; color: var(--accent-gold);">${item.category} - ${item.price.toLocaleString()} IQD</div>
+                            <div style="font-weight: bold; font-size: 0.85rem;">${f.name} (${f.category})</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-gold);">${f.price.toLocaleString()} IQD</div>
                         </div>
                     </div>
-                    <button class="btn-delete" onclick="deleteFood(${item.id})">سڕینەوە</button>
+                    <button class="btn-delete" onclick="deleteFood(${f.id})">سڕینەوە</button>
                 </div>
             `).join('');
         }
 
-        function saveData() {
-            localStorage.setItem('lux_foods', JSON.stringify(foods));
-            renderCategories();
-            renderMenu();
-        }
-
         function sendComplaint() {
-            const text = document.getElementById('complaint-text').value;
-            if (!text) return;
-            alert('گڵەیییەکەت بەسەرکەوتوویی گەیشت!');
+            const text = document.getElementById('complaint-text').value.trim();
+            if (!text) {
+                alert('تکایە پێشنیاز یان گڵەییەکەت بنووسە!');
+                return;
+            }
+            
+            if (telegramToken && telegramChatId) {
+                sendOrderToTelegram(`📩 *گڵەیی یان پێشنیازی نوێ:*\n\n${text}`);
+            }
+
+            alert('سوپاس! گڵەیی و پێشنیازەکەت بە سەرکەوتوویی گەیەندرا.');
+            document.getElementById('complaint-text').value = '';
             closeModal('complaint-modal');
         }
 
-        updateRestaurantStatusUI();
-        updateCustomerUI();
         renderStories();
         renderCategories();
         renderMenu();
+        updateCustomerUI();
+        updateRestaurantStatusUI();
     </script>
 </body>
 </html>
