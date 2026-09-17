@@ -147,6 +147,7 @@
             background: rgba(212, 175, 55, 0.1);
         }
 
+        /* 🟢 باری کراوە/داخراو لە هەدەر */
         .rest-status-badge {
             padding: 3px 10px;
             border-radius: 12px;
@@ -583,7 +584,7 @@
         </button>
     </div>
 
-    <!-- 📱 مۆداڵی تۆماربوون / چوونەژوورەوەی کڕیار -->
+    <!-- 📱 مۆداڵی تۆماربوون / چوونەژوورەوەی کڕیار بە ژمارەی مۆبایل و کۆد -->
     <div class="modal" id="customer-auth-modal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark close-btn" onclick="closeModal('customer-auth-modal')"></i>
@@ -698,6 +699,7 @@
                 <h3 style="color: var(--accent-gold);">کۆنترۆڵ 💡</h3>
             </div>
 
+            <!-- 🔴 گۆڕینی باری خواردنگە (کراوەیە / داخراوە) -->
             <div class="status-toggle-box">
                 <label style="font-size: 0.82rem; color: var(--accent-gold); font-weight: bold;"><i class="fa-solid fa-store"></i> باری کارکردنی خواردنگە:</label>
                 <div class="status-btn-group">
@@ -791,18 +793,19 @@
                 <div id="admin-delivery-drivers-list"></div>
             </div>
 
+            <!-- 🤖 بەشی بەستنەوەی تەلەگرام بۆت (Telegram Bot Settings) -->
             <div class="tab-content" id="tab-telegram">
                 <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 14px;">
                     <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.85rem;"><i class="fa-brands fa-telegram" style="color:#0088cc;"></i> بەستنەوەی تەلەگرام بۆت</h4>
                     <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
-                        تەلەگرام بۆت ئۆتۆماتیک تەواوی داواکارییە نوێیەکان بە بێدەنگی ڕەوانەی تەلەگرامەکەت دەکات.
+                        تەلەگرام بۆت ئۆتۆماتیک تەواوی داواکارییە نوێیەکان بە بێدەنگی ڕەوانەی تەلەگرامەکەت (`07828372961`) دەکات.
                     </p>
                     <div class="form-group">
-                        <label>Bot Token:</label>
+                        <label>Bot Token (لە BotFather وەریگرە):</label>
                         <input type="text" id="tg-token-input" class="input-box" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ">
                     </div>
                     <div class="form-group">
-                        <label>Chat ID:</label>
+                        <label>Chat ID (ناسنامەی تەلەگرامەکەت):</label>
                         <input type="text" id="tg-chatid-input" class="input-box" placeholder="987654321">
                     </div>
                     <button class="btn-gold" onclick="saveTelegramSettings()">تۆمارکردنی زانیاری تەلەگرام</button>
@@ -844,7 +847,10 @@
         let currentCustomer = JSON.parse(localStorage.getItem('lux_current_customer')) || null;
         let generatedOtpCode = null;
 
+        // 🏪 باری خواردنگە (کراوەیە یان داخراوە)
         let restaurantStatus = localStorage.getItem('lux_restaurant_status') || 'open';
+
+        // 🤖 زانیارییەکانی تەلەگرام بۆت
         let telegramToken = localStorage.getItem('lux_telegram_token') || '';
         let telegramChatId = localStorage.getItem('lux_telegram_chat_id') || '';
 
@@ -858,6 +864,7 @@
 
         let deliveryMapInstances = {};
 
+        // 🟢 نوێکردنەوەی باری کراوە/داخراوی خواردنگە لە سەرەوە و لە فۆڕم
         function updateRestaurantStatusUI() {
             const headerBadge = document.getElementById('header-rest-status');
             const submitBtn = document.getElementById('btn-submit-order');
@@ -891,9 +898,10 @@
             restaurantStatus = status;
             localStorage.setItem('lux_restaurant_status', status);
             updateRestaurantStatusUI();
-            alert(status === 'open' ? 'خواردنگە لە ئێستادا کرایەوە!' : 'خواردنگە داخرا!');
+            alert(status === 'open' ? 'خواردنگە لە ئێستادا کرایەوە! کڕیاران دەتوانن داواکاری بنێرن.' : 'خواردنگە داخرا! ناردنی داواکاری ڕاگیرا.');
         }
 
+        // 🤖 زانیاری تەلەگرام بۆت تۆمار بکه
         function saveTelegramSettings() {
             const token = document.getElementById('tg-token-input').value.trim();
             const chatId = document.getElementById('tg-chatid-input').value.trim();
@@ -904,9 +912,10 @@
             telegramToken = token;
             telegramChatId = chatId;
 
-            alert('زانیارییەکانی تەلەگرام بۆت تۆمارکران!');
+            alert('زانیارییەکانی تەلەگرام بۆت بە سەرکەوتوویی تۆمارکران!');
         }
 
+        // 📱 بەشی چوونەژوورەوەی کڕیار بە مۆبایل و کۆد (OTP)
         function updateCustomerUI() {
             const btnText = document.getElementById('cust-btn-text');
             const statusText = document.getElementById('cust-status-text');
@@ -1033,6 +1042,32 @@
             }, 250);
         }
 
+        function shareOrderToWhatsApp(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            let msg = `*داواکاری نوێ لە خواردنگەی یوسف* 🍕\n\n`;
+            msg += `📱 *ژمارەی مۆبایل:* ${order.phone}\n`;
+            msg += `📝 *تێبینی/ناونیشان:* ${order.note}\n`;
+            msg += `🕒 *کات:* ${order.time}\n\n`;
+            msg += `📋 *لیستی خواردنەکان:*\n`;
+
+            order.items.forEach(item => {
+                msg += `• ${item.name} (${item.qty} دانە) - ${(item.price * item.qty).toLocaleString()} IQD\n`;
+            });
+
+            msg += `\n💰 *کۆی گشتی:* ${order.totalPrice.toLocaleString()} IQD\n`;
+
+            if (order.coords) {
+                msg += `📍 *لوکەیشنی GPS:* https://www.google.com/maps?q=${order.coords.lat},${order.coords.lng}\n`;
+            }
+
+            const targetPhone = "9647508826695";
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // 🤖 ناردنی داواکاری بۆ تەلەگرام لە ڕێگەی Bot API
         function sendOrderToTelegram(msgText) {
             if (!telegramToken || !telegramChatId) return;
 
@@ -1047,15 +1082,15 @@
             }).catch(err => console.error("خەتا لە ناردن بۆ تەلەگرام:", err));
         }
 
-        // 🎯 بەشی ناردنی داواکاری (بە بێ واتسئاپ - ڕاستەوخۆ بۆ ئەدمین)
         function submitDirectOrder() {
+            // 🛑 پشکنینی باری خواردنگە
             if (restaurantStatus === 'closed') {
-                alert('ببوورە! خواردنگە لە ئێستادا داخراوە.');
+                alert('ببوورە! خواردنگە لە ئێستادا داخراوە و ناتوانیت داواکاری بنێریت.');
                 return;
             }
 
             if (!currentCustomer) {
-                alert('تکایە سەرەتا خۆت تۆمار بکە یان بچۆ ژوورەوە!');
+                alert('تکایە سەرەتا خۆت تۆمار بکە یان بچۆ ژوورەوە بۆ ناردنی داواکاری!');
                 openCustomerAuthModal();
                 return;
             }
@@ -1121,7 +1156,10 @@
             document.getElementById('loc-btn-text').textContent = 'دیاریکردنی شوێنەکەم';
             renderMenu();
 
-            alert('داواکارییەکەت بە سەرکەوتوویی تۆمارکرا و ڕەوانەی بەشی ئەدمین کرا! داواکارییەکەت لە کاتێکی کەمدا جێبەجێ دەکرێت.');
+            const targetPhone = "9647508826695";
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encodeURIComponent(msg)}`;
+            
+            window.open(whatsappUrl, '_blank');
         }
 
         function renderAdminMessenger() {
@@ -1155,6 +1193,12 @@
                                 <i class="fa-solid fa-map-location-dot"></i> نیشاندانی شوێن لە Google Maps
                             </a>
                         ` : `<div style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">(شوێن دیاری نەکراوە)</div>`}
+
+                        <div>
+                            <button class="btn-whatsapp" onclick="shareOrderToWhatsApp(${o.id})">
+                                <i class="fa-brands fa-whatsapp"></i> شێرکردن بۆ WhatsApp
+                            </button>
+                        </div>
 
                         <div style="margin-top: 10px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;">
                             <label style="font-size: 0.75rem; color: var(--accent-gold); display: block; margin-bottom: 4px;">ناردنی ئۆردەر بۆ سایەقی دەیڤەری:</label>
@@ -1263,6 +1307,12 @@
                         <div><strong>تێبینی/ناونیشان:</strong> ${o.note}</div>
                         <div><strong>بارودۆخ:</strong> <span style="color:var(--accent-gold);">${o.status}</span></div>
 
+                        <div>
+                            <button class="btn-whatsapp" onclick="shareOrderToWhatsApp(${o.id})">
+                                <i class="fa-brands fa-whatsapp"></i> شێرکردن بۆ WhatsApp
+                            </button>
+                        </div>
+                        
                         ${o.coords ? `
                             <button class="btn-map-app" onclick="toggleDeliveryInlineMap(${o.id}, ${o.coords.lat}, ${o.coords.lng}, '${o.phone}')">
                                 <i class="fa-solid fa-map-location-dot"></i> کردنەوە / داخستنی نەخشە لەناو پەنێڵ
@@ -1581,6 +1631,7 @@
                 renderAdminDeliveryDrivers();
                 updateRestaurantStatusUI();
 
+                // دابینکردنی زانیاری تەلەگرام لە خانەکان
                 if(document.getElementById('tg-token-input')) document.getElementById('tg-token-input').value = telegramToken;
                 if(document.getElementById('tg-chatid-input')) document.getElementById('tg-chatid-input').value = telegramChatId;
             }
@@ -1588,6 +1639,7 @@
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+        // 🔐 بەڕێوەبردنی باری چوونەژوورەوەی ئەدمین
         function openAdminModal() {
             const isAdminLogged = localStorage.getItem('lux_admin_logged_in') === 'true';
             if (isAdminLogged) {
