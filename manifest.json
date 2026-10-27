@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "خواردنگەی یوسف",
+  "short_name": "یوسف",
+  "description": "داواکاری ئۆنلاین بۆ خواردنگەی یوسف",
+  "lang": "ckb",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d11",
+  "theme_color": "#0d0d11",
+  "categories": ["food", "shopping"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
